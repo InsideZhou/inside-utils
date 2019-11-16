@@ -1,21 +1,27 @@
-extern crate rand;
 extern crate clap;
-
-use rand::distributions::Alphanumeric;
-use rand::{thread_rng, Rng};
-use clap::{Arg, App};
+extern crate rand;
 
 use std::process;
+
+use clap::{App, Arg};
+use rand::{Rng, thread_rng};
+use rand::distributions::Alphanumeric;
 
 const DEFAULT_LEN: usize = 16;
 
 fn main() {
     let default_len = &DEFAULT_LEN.to_string();
-    let options = App::new("Random String Generator")
-        .version("0.1.0")
-        .arg(Arg::with_name("length").default_value(default_len))
-        .get_matches();
+    let app = App::new("Random alphanumeric string generator")
+        .version("0.0.1")
+        .arg(
+            Arg::with_name("length")
+                .default_value(default_len)
+                .help("string length"),
+        );
 
+    let mut app_for_write_help = app.clone();
+
+    let options = app.get_matches();
     let len: usize;
 
     match options.value_of("length") {
@@ -25,10 +31,10 @@ fn main() {
                     len = DEFAULT_LEN;
                 }
                 _ => len = arg_len,
-            }
+            },
             _ => {
-                eprintln!("(len must be usize, got {})", arg);
-                process::abort();
+                let _result = app_for_write_help.print_help();
+                process::exit(1)
             }
         },
         _ => len = DEFAULT_LEN,

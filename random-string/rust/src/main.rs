@@ -46,5 +46,5 @@ fn main() {
         .take(len)
         .collect();
 
-    println!("{}", rand_string)
+    print!("{}", rand_string)
 }

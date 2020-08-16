@@ -30,6 +30,7 @@
         "defaults":
         {
             // Put settings here that you want to apply to all profiles.
+            "colorScheme": "Dracula"
         },
         "list":
         [
@@ -64,7 +65,51 @@
 
     // Add custom color schemes to this array.
     // To learn more about color schemes, visit https://aka.ms/terminal-color-schemes
-    "schemes": [],
+    "schemes": [
+        {
+            "name": "Inside",
+            "foreground": "#BBBBBB",
+            "background": "#0C0C0C",
+            "cursorColor": "#FFFFFF",
+            "black": "#0C0C0C",
+            "red": "#C50F1F",
+            "green": "#13A10E",
+            "yellow": "#C19C00",
+            "blue": "#0037DA",
+            "purple": "#881798",
+            "cyan": "#3A96DD",
+            "white": "#CCCCCC",
+            "brightBlack": "#767676",
+            "brightRed": "#E74856",
+            "brightGreen": "#16C60C",
+            "brightYellow": "#F9F1A5",
+            "brightBlue": "#3B78FF",
+            "brightPurple": "#B4009E",
+            "brightCyan": "#61D6D6",
+            "brightWhite": "#F2F2F2"
+        },
+        {
+            "name" : "Dracula",
+            "background" : "#272935",
+            "black" : "#21222C",
+            "blue" : "#BD93F9",
+            "cyan" : "#8BE9FD",
+            "foreground" : "#F8F8F2",
+            "green" : "#50FA7B",
+            "purple" : "#FF79C6",
+            "red" : "#FF5555",
+            "white" : "#F8F8F2",
+            "yellow" : "#FFB86C",
+            "brightBlack" : "#6272A4",
+            "brightBlue" : "#D6ACFF",
+            "brightCyan" : "#A4FFFF",
+            "brightGreen" : "#69FF94",
+            "brightPurple" : "#FF92DF",
+            "brightRed" : "#FF6E6E",
+            "brightWhite" : "#F8F8F2",
+            "brightYellow" : "#FFFFA5"
+        }
+    ],
 
     // Add custom keybindings to this array.
     // To unbind a key combination from your defaults.json, set the command to "unbound".

@@ -40,7 +40,7 @@
                 "name": "Windows PowerShell",
                 "commandline": "powershell.exe",
                 "hidden": false,
-                "useAcrylic": true,
+                "useAcrylic": false,
                 "acrilicOpacity": 0.9
             },
             {
@@ -49,7 +49,7 @@
                 "name": "命令提示符",
                 "commandline": "cmd.exe",
                 "hidden": false,
-                "useAcrylic": true,
+                "useAcrylic": false,
                 "acrilicOpacity": 0.9
             },
             {
@@ -57,7 +57,7 @@
                 "name": "Azure Cloud Shell",
                 "source": "Windows.Terminal.Azure",
                 "hidden": false,
-                "useAcrylic": true,
+                "useAcrylic": false,
                 "acrilicOpacity": 0.9
             }
         ]

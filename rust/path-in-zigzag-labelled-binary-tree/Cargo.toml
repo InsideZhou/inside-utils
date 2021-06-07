@@ -1,0 +1,9 @@
+[package]
+name = "path-in-zigzag-labelled-binary-tree"
+version = "0.1.0"
+authors = ["Inside <inside@insidezhou.me>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]

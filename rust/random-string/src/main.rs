@@ -4,8 +4,8 @@ extern crate rand;
 use std::process;
 
 use clap::{App, Arg};
-use rand::{Rng, thread_rng};
 use rand::distributions::Alphanumeric;
+use rand::{thread_rng, Rng};
 
 const DEFAULT_LEN: usize = 16;
 

@@ -1,0 +1,15 @@
+#!/bin/sh
+
+
+basedir=$(cd `dirname $0`; pwd)
+parentdir=$(cd $basedir; cd ..; pwd)
+hostname=$(hostname) 
+
+docker run --name openresty \
+	--log-opt max-size=1g \
+	--network=host \
+	--restart=always \
+	-d \
+	-v $basedir/conf:/usr/local/openresty/nginx/conf \
+	-v $basedir/html:/usr/local/openresty/nginx/html \
+	inside/openresty

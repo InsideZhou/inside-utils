@@ -1,0 +1,11 @@
+/var/log/openresty/access.log {
+    su root root
+    daily
+    rotate  1000
+    dateext
+    missingok
+    compress
+    postrotate
+        docker exec openresty nginx -s reopen
+    endscript
+}

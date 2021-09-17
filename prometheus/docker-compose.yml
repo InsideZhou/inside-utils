@@ -1,0 +1,13 @@
+services:
+  node-exporter:
+    image: prom/node-exporter
+    container_name: node-exporter
+    ports:
+      - "9091:9091"
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    depends_on:
+      - node-exporter
+    ports:
+      - "9090:9090"

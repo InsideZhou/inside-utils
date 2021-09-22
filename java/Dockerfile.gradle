@@ -1,0 +1,5 @@
+FROM 'gradle:7-jdk11'
+
+RUN apt-get update
+RUN apt-get install -y gnupg
+RUN apt-get clean

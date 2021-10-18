@@ -24,6 +24,4 @@ ENV DB_VERSION V008R003C002B0320
 
 USER kingbase
 
-EXPOSE 54321
-
 ENTRYPOINT ["/opt/kingbase/docker-entrypoint.sh"]

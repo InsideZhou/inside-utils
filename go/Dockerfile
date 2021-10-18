@@ -1,4 +1,4 @@
-FROM 'openresty/openresty:focal'
+FROM 'golang:1'
 
 ENV TIMEZONE="Asia/Shanghai"
 
@@ -16,10 +16,8 @@ RUN locale-gen && \
 ENV LANG="en_US.UTF-8" \
 	LC_CTYPE="zh_CN.UTF-8"
 
+RUN apt-get -y install vim git
 RUN apt-get clean
 
-RUN mkdir -p /usr/local/openresty/nginx/conf/vhost \
-    && mkdir -p /usr/local/openresty/nginx/conf/extra \
-    && mkdir -p /usr/local/openresty/nginx/conf/certs \
-    && mkdir -p /usr/local/openresty/nginx/conf/tcp_proxy \
-    && mkdir -p /usr/local/openresty/nginx/html
+RUN printf "set shiftwidth=4\nset tabstop=4\nset softtabstop=4\nset autoindent\nset smartindent " >> /etc/vim/vimrc.local
+RUN printf "alias ll='ls -Alh'\n" >> /etc/bash.bashrc

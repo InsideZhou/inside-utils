@@ -1,6 +1,10 @@
-FROM 'postgres:13'
+FROM 'postgres:14'
 
 ENV TIMEZONE="Asia/Shanghai"
+
+COPY timescale-timescaledb-E7391C94080429FF.pub.gpg /root/
+RUN cat /root/timescale-timescaledb-E7391C94080429FF.pub.gpg | gpg --dearmor --output /usr/share/keyrings/timescaledb.keyring
+RUN echo "deb [signed-by=/usr/share/keyrings/timescaledb.keyring] https://packagecloud.io/timescale/timescaledb/debian/ bullseye main" > /etc/apt/sources.list.d/timescaledb.list
 
 RUN apt-get update
 
@@ -12,7 +16,7 @@ RUN locale-gen && \
 	ln -snf /usr/share/zoneinfo/$TIMEZONE /etc/localtime && \
 	dpkg-reconfigure -f noninteractive tzdata && \
 	localedef -i zh_CN -c -f UTF-8 -A /usr/share/locale/locale.alias zh_CN.UTF-8
-	
+
 ENV LANG="en_US.UTF-8" \
 	LC_CTYPE="zh_CN.UTF-8"
 

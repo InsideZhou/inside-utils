@@ -19,10 +19,12 @@ pub fn majority_element_one_third(nums: Vec<usize>) -> Vec<usize> {
 
 #[cfg(test)]
 mod tests {
+    use crate::majority_element_ii::*;
+
     #[test]
     fn test_majority_element_one_third() {
-        assert_eq!(crate::majority_element_one_third(vec![1usize, 1, 2, 3, 1, 4, 5, 6, 1, 1]), [1usize]);
+        assert_eq!(majority_element_one_third(vec![1usize, 1, 2, 3, 1, 4, 5, 6, 1, 1]), [1usize]);
 
-        assert_eq!(crate::majority_element_one_third(vec![1usize, 1, 1, 1, 2, 2, 2, 2, 3, 1, 4, 2, 2, 1, 1]), [1usize, 2]);
+        assert_eq!(majority_element_one_third(vec![1usize, 1, 1, 1, 2, 2, 2, 2, 3, 1, 4, 2, 2, 1, 1]), [1usize, 2]);
     }
 }

@@ -1,0 +1,25 @@
+{
+  "name": "rangelist",
+  "version": "0.1.0",
+  "description": "Utils for range list, a range list is an aggregate of these ranges: [1, 5), [10, 11), [100, 201).",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules npx jest"
+  },
+  "author": {
+    "name": "Inside",
+    "email": "inside@insidezhou.me"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "license": "BSD-3-Clause",
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "jest": "^27.5.1"
+  },
+  "jest": {
+    "transform": {}
+  }
+}

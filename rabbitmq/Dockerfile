@@ -19,6 +19,6 @@ ENV LANG="en_US.UTF-8" \
 RUN apt-get -y install vim git
 RUN apt-get clean
 
-COPY *.ez /usr/lib/rabbitmq/plugins/
+COPY *.ez /opt/rabbitmq/plugins
 RUN printf "set shiftwidth=4\nset tabstop=4\nset softtabstop=4\nset autoindent\nset smartindent " >> /etc/vim/vimrc.local
 RUN printf "alias ll='ls -Alh'\n" >> /etc/bash.bashrc

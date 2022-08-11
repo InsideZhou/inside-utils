@@ -5,7 +5,7 @@ ENV TIMEZONE="Asia/Shanghai"
 RUN apt-get update
 
 RUN printf "en_US.UTF-8 UTF-8 \nzh_CN.UTF-8 UTF-8" > /etc/locale.gen
-RUN apt-get -y install locales tzdata
+RUN apt-get -y install locales tzdata vim
 RUN locale-gen && \
 	echo $TIMEZONE > /etc/timezone && \
 	rm /etc/localtime && \
@@ -15,8 +15,11 @@ RUN locale-gen && \
 	
 ENV LANG="en_US.UTF-8" \
 	LC_CTYPE="zh_CN.UTF-8"
-
+	
 RUN apt-get clean
+
+RUN printf "set shiftwidth=4\nset tabstop=4\nset softtabstop=4\nset autoindent\nset smartindent " >> /etc/vim/vimrc.local
+RUN printf "alias ll='ls -Alh'\n" >> /etc/bash.bashrc
 
 RUN mkdir -p /usr/local/openresty/nginx/conf/vhost \
     && mkdir -p /usr/local/openresty/nginx/conf/extra \

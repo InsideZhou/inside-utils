@@ -5,8 +5,13 @@ basedir=$(cd `dirname $0`; pwd)
 parentdir=$(cd $basedir; cd ..; pwd)
 hostname=$(hostname) 
 
+if [ ! -n "$1" ];then
+    echo -e "\n第一个参数需要指定log的max-size"
+    exit 1
+fi
+
 docker run --name openresty \
-	--log-opt max-size=1g \
+	--log-opt max-size=$1 \
 	--network=host \
 	--restart=always \
 	-d \

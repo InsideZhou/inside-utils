@@ -1,0 +1,4 @@
+#!/bin/sh
+
+
+docker exec -it mongodb-router mongo --port 27017

@@ -1,0 +1,23 @@
+security:
+    keyFile: /etc/mongo-keyFile
+
+net:
+    bindIp: 0.0.0.0
+    port: 27018
+
+storage:
+    dbPath: /var/lib/mongodb
+    journal:
+        enabled: true
+
+systemLog:
+    destination: file
+    path: "/var/log/mongodb/shard.log"
+    logAppend: true
+
+replication:
+    replSetName: shardRSExample
+
+# shard下面的replica set不应有下面这段参数
+sharding:
+    clusterRole: shardsvr

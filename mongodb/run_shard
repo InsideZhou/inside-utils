@@ -1,0 +1,20 @@
+#!/bin/sh
+
+
+basedir=$(cd `dirname $0`; pwd)
+parentdir=$(cd $basedir; cd ..; pwd)
+hostname=$(hostname)
+
+mkdir -p /var/lib/mongodb/shard
+chmod -R 777 /var/lib/mongodb/shard
+
+docker run --name mongodb-shard \
+	--restart=always \
+	--log-opt max-size=1g \
+	--network=host \
+	-d \
+	-v $parentdir/hosts:/etc/hosts \
+	-v $basedir/mongod-shard.yml:/etc/mongod.yml \
+	-v /var/lib/mongodb/shard:/var/lib/mongodb \
+	example/mongo \
+	mongod --config /etc/mongod.yml

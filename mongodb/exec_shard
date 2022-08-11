@@ -1,0 +1,4 @@
+#!/bin/sh
+
+
+docker exec -it mongodb-shard mongo --port 27018

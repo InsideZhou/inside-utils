@@ -1,0 +1,12 @@
+security:
+    keyFile: /etc/mongo-keyFile
+
+net:
+    bindIp: 0.0.0.0
+    port: 27017
+
+systemLog:
+    logAppend: true
+
+sharding:
+    configDB: configRS/service-0:27019,service-1:27019,service-2:27019

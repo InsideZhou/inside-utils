@@ -1,0 +1,41 @@
+{
+  _id: "configRS",
+  configsvr: true,
+  protocolVersion: 1,
+  members: [
+    { _id : 0, host : "service-0:27019", priority: 2 },
+    { _id : 1, host : "service-1:27019", priority: 1 },
+    { _id : 2, host : "service-2:27019", priority: 1 }
+  ]
+}
+
+{
+  _id: "shardRS0",
+  protocolVersion: 1,
+  members: [
+    { _id : 0, host : "mongo-0:27018", priority: 2 },
+    { _id : 1, host : "service-0:27018", priority: 1 }
+  ]
+}
+
+{
+  _id: "shardRS1",
+  protocolVersion: 1,
+  members: [
+    { _id : 0, host : "mongo-1:27018", priority: 2 },
+    { _id : 1, host : "service-1:27018", priority: 1 }
+  ]
+}
+
+{
+  _id: "shardRS2",
+  protocolVersion: 1,
+  members: [
+    { _id : 0, host : "mongo-2:27018", priority: 2 },
+    { _id : 1, host : "service-2:27018", priority: 1 }
+  ]
+}
+
+"shardRS0/mongo-0:27018"
+"shardRS1/mongo-1:27018"
+"shardRS2/mongo-2:27018"

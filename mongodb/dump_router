@@ -1,0 +1,9 @@
+#!/bin/sh
+
+
+if [ ! -n "$1" ];then
+	echo -e "\n第一个参数需要指定collection"
+	exit 1
+fi
+
+docker exec -it mongodb-router mongodump -v -h 127.0.0.1 -d <DATABASE_NAME> -c $1 -o /var/lib/mongodb/dump/ -u <USERNAME> -p <PASSWORD> --authenticationDatabase admin

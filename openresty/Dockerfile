@@ -13,8 +13,8 @@ RUN locale-gen && \
 	dpkg-reconfigure -f noninteractive tzdata && \
 	localedef -i zh_CN -c -f UTF-8 -A /usr/share/locale/locale.alias zh_CN.UTF-8
 	
-ENV LANG="en_US.UTF-8" \
-	LC_CTYPE="zh_CN.UTF-8"
+ENV LANG="zh_CN.UTF-8" \
+	LC_MESSAGE="en_US.UTF-8"
 	
 RUN apt-get clean
 

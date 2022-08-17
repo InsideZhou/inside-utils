@@ -16,9 +16,11 @@ RUN locale-gen && \
 ENV LANG="zh_CN.UTF-8" \
 	LC_MESSAGE="en_US.UTF-8"
 
-RUN apt-get -y install vim git
+RUN apt-get -y install vim git less
 RUN apt-get clean
 
 COPY *.ez /opt/rabbitmq/plugins
+
+RUN printf "export LESS='-x4'" >> /etc/profile.d/less.sh
 RUN printf "set shiftwidth=4\nset tabstop=4\nset softtabstop=4\nset autoindent\nset smartindent " >> /etc/vim/vimrc.local
 RUN printf "alias ll='ls -Alh'\n" >> /etc/bash.bashrc

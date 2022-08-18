@@ -1,3 +1,8 @@
 #!/bin/sh
 
-docker exec openresty nginx -t && docker exec openresty nginx -s reload
+if [ ! -n "$1" ];then
+    echo -e "\n第一个参数需要指定要操作的docker compose service"
+    exit 1
+fi
+
+docker compose exec $1 nginx -t && docker compose exec $1 nginx -s reload

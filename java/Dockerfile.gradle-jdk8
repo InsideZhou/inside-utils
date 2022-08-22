@@ -1,4 +1,4 @@
-FROM 'azul/zulu-openjdk:11'
+FROM 'gradle:7-jdk8'
 
 ENV TIMEZONE="Asia/Shanghai"
 
@@ -16,7 +16,7 @@ RUN locale-gen && \
 ENV LANG="zh_CN.UTF-8" \
 	LC_MESSAGE="en_US.UTF-8"
 
-RUN apt-get -y install vim git less
+RUN apt-get -y install vim git gnupg less
 RUN apt-get clean
 
 RUN printf "export LESS='-x4'" >> /etc/profile.d/less.sh

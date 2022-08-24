@@ -1,8 +1,9 @@
 #!/bin/sh
 
-if [ ! -n "$1" ];then
-    echo -e "\n第一个参数需要指定要操作的docker compose service"
-    exit 1
+service="container-logs"
+
+if [ -n "$1" ];then
+    service=$1
 fi
 
-docker compose exec $1 nginx -t
+docker compose exec $service nginx -t

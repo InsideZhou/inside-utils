@@ -1,3 +1,5 @@
+// https://leetcode.cn/problems/majority-element-ii/
+
 use std::collections::HashMap;
 
 pub fn majority_element_one_third(nums: Vec<usize>) -> Vec<usize> {

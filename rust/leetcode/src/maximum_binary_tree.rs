@@ -142,4 +142,24 @@ mod tests {
         assert_eq!(root_right.val, 2);
         assert_eq!(nums, [Some(3), None, Some(2), None, Some(1)]);
     }
+
+
+    #[test]
+    fn single() {
+        setup_test();
+
+        let tree_option = construct_maximum_binary_tree([3].to_vec());
+        let root = tree_option.unwrap();
+        let root = root.borrow().clone();
+
+        let nums = root.to_vec_in_level_order();
+
+        let root_left = root.left;
+        let root_right = root.right;
+
+        assert_eq!(root.val, 3);
+        assert!(root_left.is_none());
+        assert!(root_right.is_none());
+        assert_eq!(nums, [Some(3)]);
+    }
 }

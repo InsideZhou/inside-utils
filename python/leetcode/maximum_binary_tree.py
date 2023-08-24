@@ -1,11 +1,11 @@
 #!/usr/bin/env python
+# https://leetcode.cn/problems/maximum-binary-tree/
 from __future__ import annotations
 
 import unittest
 from typing import Optional, List
 
 
-# Definition for a binary tree node.
 class TreeNode:
     @staticmethod
     def construct_maximum_binary_tree(nums: List[int]) -> Optional[TreeNode]:

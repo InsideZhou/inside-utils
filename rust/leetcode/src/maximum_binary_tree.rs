@@ -3,7 +3,7 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct TreeNode {
     pub val: i32,
     pub left: Option<Rc<RefCell<TreeNode>>>,
@@ -20,17 +20,31 @@ impl TreeNode {
         }
     }
 
+    pub fn clone(&self) -> Self {
+        TreeNode {
+            val: self.val,
+            left: self.left.clone(),
+            right: self.right.clone(),
+        }
+    }
+
+    pub fn rc_wrap(&self) -> Option<Rc<RefCell<TreeNode>>> {
+        Some(Rc::new(RefCell::new(self.clone())))
+    }
+
     pub fn add(mut self, val: i32) -> Self {
         if val == self.val { return self; }
 
         if val > self.val {
             let mut new_node = TreeNode::new(val);
-            new_node.left = Some(Rc::new(RefCell::new(self)));
+            new_node.left = self.rc_wrap();
             return new_node;
         }
 
         let new_node = if self.right.is_some() {
-            self.right.unwrap().borrow().clone().add(val)
+            let rc = self.right.unwrap();
+            let right = rc.borrow();
+            right.clone().add(val)
         } else {
             TreeNode::new(val)
         };
@@ -41,8 +55,10 @@ impl TreeNode {
     }
 
     pub fn to_vec_in_level_order(&self) -> Vec<Option<i32>> {
+        let root_node = self.rc_wrap();
+
         let mut nums: Vec<Option<i32>> = [].to_vec();
-        let mut nodes = [Some(self.clone())].to_vec();
+        let mut nodes = [root_node].to_vec();
 
         while let Some(option) = nodes.pop() {
             if option.is_none() {
@@ -50,17 +66,18 @@ impl TreeNode {
                 continue;
             }
 
-            let node = option.unwrap();
+            let rc = option.unwrap();
+            let node = rc.borrow();
             nums.push(Some(node.val));
 
             if node.left.is_some() {
-                nodes.insert(0, Some(node.left.unwrap().borrow().clone()));
+                nodes.insert(0, Some(node.left.clone().unwrap()));
             } else {
                 nodes.insert(0, None)
             }
 
             if node.right.is_some() {
-                nodes.insert(0, Some(node.right.unwrap().borrow().clone()));
+                nodes.insert(0, Some(node.right.clone().unwrap()));
             } else {
                 nodes.insert(0, None)
             }

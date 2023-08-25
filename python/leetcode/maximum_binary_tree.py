@@ -14,7 +14,7 @@ class TreeNode:
 
         node = TreeNode(nums[0])
         for num in nums:
-            node = node.add(num)
+            node = node.__add(num)
 
         return node
 
@@ -23,7 +23,7 @@ class TreeNode:
         self.left = left
         self.right = right
 
-    def add(self, val: int) -> TreeNode:
+    def __add(self, val: int) -> TreeNode:
         if val == self.val:
             return self
 
@@ -32,9 +32,41 @@ class TreeNode:
             new_node.left = self
             return new_node
 
-        self.right = TreeNode(val) if self.right is None else self.right.add(val)
+        self.right = TreeNode(val) if self.right is None else self.right.__add(val)
 
         return self
+
+    def max_value(self) -> int:
+        candidates = [self.val]
+
+        if self.left is not None:
+            candidates.append(self.left.max_value())
+
+        if self.right is not None:
+            candidates.append(self.right.max_value())
+
+        return max(candidates)
+
+    def min_value(self) -> int:
+        candidates = [self.val]
+
+        if self.left is not None:
+            candidates.append(self.left.min_value())
+
+        if self.right is not None:
+            candidates.append(self.right.min_value())
+
+        return min(candidates)
+
+    def is_valid_bst(self) -> bool:
+        if self.left is None and self.right is None:
+            return True
+        elif self.left is None:
+            return self.right.is_valid_bst() and self.val < self.right.min_value()
+        elif self.right is None:
+            return self.left.is_valid_bst() and self.left.max_value() < self.val
+        else:
+            return self.left.is_valid_bst() and self.right.is_valid_bst() and self.left.max_value() < self.val < self.right.min_value()
 
     def level_order_traversal(self) -> List[int]:
         nums = []
@@ -58,6 +90,15 @@ class TreeNode:
                     break
 
         return nums
+
+    def inorder_traversal(self) -> List[Optional[int]]:
+        if self.left is None and self.right is None:
+            return [self.val]
+
+        left_list = [None] if self.left is None else self.left.inorder_traversal()
+        right_list = [None] if self.right is None else self.right.inorder_traversal()
+
+        return [self.val] + left_list + right_list
 
 
 class TestTreeNode(unittest.TestCase):

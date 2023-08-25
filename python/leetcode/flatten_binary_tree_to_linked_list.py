@@ -3,23 +3,9 @@
 from __future__ import annotations
 
 import unittest
-from typing import Optional, List
+from typing import Optional
 
-
-class TreeNode:
-    def __init__(self, val=0, left: Optional[TreeNode] = None, right: Optional[TreeNode] = None):
-        self.val = val
-        self.left = left
-        self.right = right
-
-    def to_value_list(self) -> List[Optional[int]]:
-        if self.left is None and self.right is None:
-            return [self.val]
-
-        left_list = [None] if self.left is None else self.left.to_value_list()
-        right_list = [None] if self.right is None else self.right.to_value_list()
-
-        return [self.val] + left_list + right_list
+from maximum_binary_tree import TreeNode
 
 
 def flatten(root: Optional[TreeNode]) -> None:
@@ -56,12 +42,12 @@ class TestFlattenBinaryTreeToLinkedList(unittest.TestCase):
         root = TreeNode(1, d, e)
 
         flatten(root)
-        self.assertEqual([1, None, 2, None, 3, None, 4, None, 5, None, 6], root.to_value_list())
+        self.assertEqual([1, None, 2, None, 3, None, 4, None, 5, None, 6], root.inorder_traversal())
 
     def testSimple(self):
         root = TreeNode(0)
         flatten(root)
-        self.assertEqual([0], root.to_value_list())
+        self.assertEqual([0], root.inorder_traversal())
 
 
 if __name__ == '__main__':

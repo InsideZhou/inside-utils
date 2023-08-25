@@ -17,7 +17,7 @@ def group_anagrams(strs: List[str]) -> List[List[str]]:
 
     result = [item for item in groups.values()]
     result.sort()
-    return  result
+    return result
 
 
 class TestGroupAnagrams(unittest.TestCase):

@@ -31,9 +31,7 @@ class ListNodePointer:
         self.prev = self.current
         self.current = self.next
 
-        if self.next is None:
-            self.next = None
-        else:
+        if self.next is not None:
             self.next = self.next.next
 
 

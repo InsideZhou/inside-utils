@@ -42,12 +42,12 @@ class TestFlattenBinaryTreeToLinkedList(unittest.TestCase):
         root = TreeNode(1, d, e)
 
         flatten(root)
-        self.assertEqual([1, None, 2, None, 3, None, 4, None, 5, None, 6], root.inorder_traversal())
+        self.assertEqual([1, None, 2, None, 3, None, 4, None, 5, None, 6], root.preorder_traversal_for_value())
 
     def testSimple(self):
         root = TreeNode(0)
         flatten(root)
-        self.assertEqual([0], root.inorder_traversal())
+        self.assertEqual([0], root.preorder_traversal_for_value())
 
 
 if __name__ == '__main__':

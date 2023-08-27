@@ -35,6 +35,7 @@ class ListNodePointer:
             self.next = self.next.next
 
 
+# 使用自定义指针记录链表断开点，能让逻辑清晰许多，也更简洁。
 # noinspection PyCompatibility
 def reverse_between(head: Optional[ListNode], left: int, right: int) -> Optional[ListNode]:
     first_break: Optional[ListNodePointer] = None

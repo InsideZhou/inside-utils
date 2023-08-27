@@ -4,6 +4,7 @@ import unittest
 from typing import List
 
 
+# 主要思路是快速移动索引到目标区域附近，在目标区域附近再向两翼精确检索，而不是按部就班从头开始。
 def two_sum(numbers: List[int], target: int) -> List[int]:
     """
 

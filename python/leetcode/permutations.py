@@ -5,6 +5,7 @@ import unittest
 from typing import List
 
 
+# 借助不含重复数字的特性，利用分治的思路实现。
 def permute(nums: List[int]) -> List[List[int]]:
     nums_length = len(nums)
     if 2 == nums_length:

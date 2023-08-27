@@ -16,6 +16,7 @@ def search(nums: List[int], target: int) -> int:
     left_part = nums[0:split_index]
     right_part = nums[split_index:]
 
+    # 折半查找的同时，利用数据集有序且互不相同的性质，排除无需处理的子集。
     if not (split_index > 1 and left_part[0] < left_part[-1] and (target < left_part[0] or target > left_part[-1])):
         left_index = search(left_part, target)
         if -1 != left_index:

@@ -2,6 +2,7 @@
 
 use std::panic;
 
+// 处理边界情况；转为减法；使用移位操作加速。
 pub fn divide(dividend: i32, divisor: i32) -> i32 {
     if 0 == divisor {
         panic!("divisor can't be zero")
@@ -66,7 +67,7 @@ fn calculate_result(negative_dividend: i32, negative_divisor: i32) -> u32 {
         prev_remaining = remaining;
         prev_result = result;
 
-        log::debug!("counter={}, remaining={}, result={}", counter, remaining, result);
+        log::debug!("counter={}, remaining={}, result={}, dividend={}, divisor={}", counter, remaining, result, negative_dividend, negative_divisor);
         remaining -= negative_divisor << counter;
         result += 2_u32.pow(counter);
         counter += 1;

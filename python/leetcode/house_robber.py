@@ -6,6 +6,7 @@ import unittest
 from typing import List
 
 
+# 每次计算时，必须的依赖已经由上游完成计算，并注入到当前上下文中。
 def rob(nums: List[int]) -> int:
     prev_two, prev_one = 0, 0
     for num in nums:

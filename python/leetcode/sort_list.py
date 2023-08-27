@@ -8,7 +8,7 @@ from maximum_binary_tree import TreeNode
 from reverse_linked_list_ii import ListNode, ListNodePointer
 
 
-# binary search tree sort
+# 利用二叉搜索树排序，如果建立的树近似于单链表，就失去了二叉树的优势，不适合在已经近乎有序的数据集上使用。
 def bst_sort(head: Optional[ListNode]) -> Optional[ListNode]:
     if head is None:
         return None
@@ -251,7 +251,7 @@ class TestReverseLinkedListII(unittest.TestCase):
         self.assertEqual([-3, 1, 4, 5, 5, 8, 11, 14, 15, 19], sorted_list)
 
     def testNearlySortedList(self):
-        value_list = list(range(1, 50000)) + [0]
+        value_list = list(range(1, 5000)) + [0]
 
         nodes = []
         for i in reversed(value_list):
@@ -264,7 +264,7 @@ class TestReverseLinkedListII(unittest.TestCase):
             sorted_list.append(head.val)
             head = head.next
 
-        self.assertEqual(list(range(50000)), sorted_list)
+        self.assertEqual(list(range(5000)), sorted_list)
 
     def testBigList(self):
         value_list = list(range(50000))

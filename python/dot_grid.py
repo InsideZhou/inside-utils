@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+
 """
 Given a 3x3 dot grid on an Android lock screen:
 
@@ -35,6 +36,9 @@ import unittest
 from typing import List, Optional
 
 
+# 关键点为两个：
+# 1、图数据结构的建立，顶点、边。
+# 2、图顶点的遍历。
 # noinspection PyCompatibility
 class DotGrid:
     def __init__(self, dots_count: int = 9):
@@ -45,6 +49,7 @@ class DotGrid:
 
         self.edges = []
 
+    # 图的建立
     def connect(self, left_value: int, right_value: int) -> Edge:
         l_index = left_value - 1
         r_index = right_value - 1
@@ -73,6 +78,7 @@ class DotGrid:
 
         return result
 
+    # 图顶点的遍历
     def __fulfill_pattern(self, minimum_dots: int, index: int, patterns: List[List[int]], pattern: List[int] = None):
         dot = self.dots[index]
         if pattern is None:
@@ -80,6 +86,7 @@ class DotGrid:
         else:
             pattern.append(dot.value)
 
+        # 遍历最长路径的过程中，也生成符合要求的短路径
         if len(pattern) >= minimum_dots:
             patterns.append(pattern[:])
 

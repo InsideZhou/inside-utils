@@ -4,6 +4,7 @@ import unittest
 from typing import List
 
 
+# 两个要点：1、移除处理过的区间；2、区间合并。
 def merge(intervals: List[List[int]]) -> List[List[int]]:
     result = []
 

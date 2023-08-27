@@ -4,6 +4,7 @@ import unittest
 from typing import List
 
 
+# 字典和列表的结合使用。
 def group_anagrams(strs: List[str]) -> List[List[str]]:
     groups = {}
 

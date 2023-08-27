@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# https://leetcode.cn/problems/flatten-binary-tree-to-linked-list/
+# https://leetcode.cn/problems/validate-binary-search-tree/
 from __future__ import annotations
 
 import unittest

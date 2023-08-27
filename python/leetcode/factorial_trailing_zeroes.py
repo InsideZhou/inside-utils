@@ -4,6 +4,7 @@
 import unittest
 
 
+# 关键点是察觉数学层面的规律。
 def trailing_zeroes(n: int) -> int:
     result = 0
     while n >= 5:

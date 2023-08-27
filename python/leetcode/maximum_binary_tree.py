@@ -24,6 +24,7 @@ class TreeNode:
         self.left = left
         self.right = right
 
+    # 构建出根就是最大值的二叉树，可以由此展开联想，在构建二叉树的同时，做一些额外操作，得到有特定问题针对性的二叉树。
     def mbt_add(self, val: int) -> TreeNode:
         if val == self.val:
             self.weight += 1

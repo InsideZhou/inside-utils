@@ -1,5 +1,6 @@
 // https://leetcode.cn/problems/path-in-zigzag-labelled-binary-tree/
 
+// 思路关键点是，理清二叉树高度与2的N次方的关系，知道了给定数字所在的层，向根检索，就能得到路径。
 #[allow(dead_code)]
 pub fn path_in_zig_zag_tree(label: i32) -> Vec<i32> {
     let path = generate_path(label as usize);
@@ -52,7 +53,8 @@ fn get_parent_label(label: usize) -> usize {
 
 #[cfg(test)]
 mod tests {
-    use std::sync::{Once};
+    use std::sync::Once;
+
     use crate::path_in_zigzag_labelled_binary_tree::*;
 
     static INIT: Once = Once::new();

@@ -39,106 +39,37 @@ def insertion_sort(head: Optional[ListNode]) -> Optional[ListNode]:
     elif head.next is None:
         return head
 
-    cursor = ListNodePointer()
-    cursor.current = head
-    cursor.next = head.next
+    sorted_boundary = head
+    cursor_pointer = ListNodePointer(head)
+    cursor_pointer.move_forward()
 
-    mid_pointer = ListNodePointer(cursor)
+    while cursor_pointer.current is not None:
+        current = cursor_pointer.current
 
-    while cursor.current is not None:
-        if cursor.position / 2 > mid_pointer.position:
-            mid_pointer.move_forward()
+        if current.val > sorted_boundary.val and sorted_boundary.next is current:
+            sorted_boundary = sorted_boundary.next
+            cursor_pointer.move_forward()
+            continue
 
-        prev_node = cursor.prev
-        current_node = cursor.current
-        next_node = cursor.next
-        cursor.move_forward()
+        current = cursor_pointer.bypass()
 
-        if prev_node is not None and current_node.val < prev_node.val:
-            prev_node.next = next_node
-            cursor.prev = prev_node
-            cursor.current = next_node
-            if next_node is not None:
-                cursor.next = next_node.next
+        if current.val > sorted_boundary.val:
+            sorted_boundary.append(current)
+            sorted_boundary = sorted_boundary.next
+        elif current.val <= head.val:
+            current.next = head
+            head = current
+            cursor_pointer.position += 1
+        else:
+            insert_pointer = ListNodePointer(head)
 
-            if current_node.val > mid_pointer.current.val:
-                insert_pointer = ListNodePointer(mid_pointer)
-            else:
-                insert_pointer = ListNodePointer()
-                insert_pointer.current = head
-                insert_pointer.next = head.next
-
-            while current_node.val > insert_pointer.current.val:
+            while current.val > insert_pointer.current.val:
                 insert_pointer.move_forward()
 
-            prev_insert_node = insert_pointer.prev
-            next_insert_node = insert_pointer.current
-
-            current_node.next = next_insert_node
-            if prev_insert_node is not None:
-                prev_insert_node.next = current_node
-            else:
-                head = current_node
-
-            mid_pointer = ListNodePointer(insert_pointer)
-            mid_pointer.position += 1
-            mid_pointer.prev = prev_insert_node
-            mid_pointer.current = current_node
-            mid_pointer.next = next_insert_node
+            insert_pointer.insert(current)
+            cursor_pointer.position += 1
 
     return head
-
-
-def insertion_bst_sort(head: Optional[ListNode]) -> Optional[ListNode]:
-    if head is None:
-        return None
-    elif head.next is None:
-        return head
-
-    cursor = ListNodePointer()
-    cursor.current = head
-    cursor.next = head.next
-
-    mid_pointer = ListNodePointer(cursor)
-
-    while cursor.current is not None:
-        if cursor.position - mid_pointer.position > 2 and cursor.position / 2 > mid_pointer.position:
-            mid_pointer.move_forward()
-
-        current_prev_node = cursor.prev
-        current_node = cursor.current
-        current_next_node = cursor.next
-        cursor.move_forward()
-
-        insertion_prev_node = mid_pointer.prev
-        insertion_node = mid_pointer.current
-
-        if current_node.val <= insertion_node.val and insertion_node != current_node:
-            current_prev_node.next = current_next_node
-            cursor.prev = current_prev_node
-
-            current_node.next = insertion_node
-            if insertion_prev_node is not None:
-                insertion_prev_node.next = current_node
-            else:
-                head = current_node
-
-            mid_pointer.position += 1
-            mid_pointer.prev = insertion_prev_node
-            mid_pointer.current = current_node
-            mid_pointer.next = insertion_node
-
-    mid_pointer.move_forward()
-    mid_prev_node = mid_pointer.prev
-    if mid_prev_node is not None:
-        mid_node = mid_pointer.current
-        mid_next_node = mid_pointer.next
-
-        mid_prev_node.next = mid_next_node
-        mid_node.next = head
-        head = mid_node
-
-    return bst_sort(head)
 
 
 def quick_sort(head: Optional[ListNode]) -> Optional[ListNode]:
@@ -201,12 +132,12 @@ def merge_sort(head: Optional[ListNode]) -> Optional[ListNode]:
     elif head.next is None:
         return head
 
-    cursor_pointer = ListNodePointer()
+    cursor_pointer = ListNodePointer(head)
     cursor_pointer.current = head
     cursor_pointer.next = head.next
 
-    mid_pointer = ListNodePointer(cursor_pointer)
-    sorted_pointer = ListNodePointer(cursor_pointer)
+    mid_pointer = ListNodePointer(None, cursor_pointer)
+    sorted_pointer = ListNodePointer(None, cursor_pointer)
 
     while cursor_pointer.current is not None:
         if mid_pointer.position < (cursor_pointer.position - sorted_pointer.position) // 2 + sorted_pointer.position:
@@ -244,13 +175,8 @@ def __merge(left_node: Optional[ListNode], right_node: Optional[ListNode]) -> Op
     head = ListNode()
     tail = head
 
-    left_pointer = ListNodePointer()
-    left_pointer.current = left_node
-    left_pointer.next = left_node.next
-
-    right_pointer = ListNodePointer()
-    right_pointer.current = right_node
-    right_pointer.next = right_node.next
+    left_pointer = ListNodePointer(left_node)
+    right_pointer = ListNodePointer(right_node)
 
     while left_pointer.current is not None or right_pointer.current is not None:
         left = left_pointer.current
@@ -332,7 +258,7 @@ class TestReverseLinkedListII(unittest.TestCase):
         i = ListNode(19, h)
         j = ListNode(4, i)
 
-        head = insertion_bst_sort(j)
+        head = insertion_sort(j)
         sorted_list = []
         while head is not None:
             sorted_list.append(head.val)
@@ -348,7 +274,7 @@ class TestReverseLinkedListII(unittest.TestCase):
             n = ListNode(i, nodes[-1]) if len(nodes) > 0 else ListNode(i)
             nodes.append(n)
 
-        head = merge_sort(nodes[-1])
+        head = insertion_sort(nodes[-1])
         sorted_list = []
         while head is not None:
             sorted_list.append(head.val)

@@ -11,20 +11,60 @@ class ListNode:
         self.val = val
         self.next = next_node
 
+    def swap(self, other_node: ListNode):
+        self.next, other_node.next = other_node.next, self.next
+
+    def append(self, other_node: ListNode):
+        other_node.next = self.next
+        self.next = other_node
+
+    def connect(self, next_node: ListNode):
+        self.next = next_node
+
 
 # noinspection PyCompatibility
 class ListNodePointer:
-    def __init__(self, pointer: ListNodePointer = None):
+    def __init__(self, head: Optional[ListNode], pointer: ListNodePointer = None):
         self.position = 0
         self.prev: Optional[ListNode] = None
-        self.current: Optional[ListNode] = None
-        self.next: Optional[ListNode] = None
+        self.current: Optional[ListNode] = head
+        self.next: Optional[ListNode] = head.next if head is not None else None
 
         if pointer is not None:
             self.position = pointer.position
             self.prev = pointer.prev
             self.current = pointer.current
             self.next = pointer.next
+
+    def bypass(self) -> Optional[ListNode]:
+        current = self.current
+        if current is None:
+            return None
+
+        if self.prev is not None:
+            self.prev.next = self.next
+
+        self.current = self.next
+
+        if self.next is not None:
+            self.next = self.next.next
+
+        return current
+
+    def insert(self, node: ListNode):
+        prev = self.prev
+
+        if prev is not None:
+            prev.next = node
+
+        node.next = self.current
+        self.prev = node
+        self.position += 1
+
+    def append(self, node: ListNode):
+        node.next = self.next
+        self.next = node
+        self.current.next = node
 
     def move_forward(self):
         self.position += 1
@@ -41,21 +81,17 @@ def reverse_between(head: Optional[ListNode], left: int, right: int) -> Optional
     first_break: Optional[ListNodePointer] = None
     second_break: Optional[ListNodePointer] = None
 
-    pointer = ListNodePointer()
-    pointer.position = 1
-    pointer.prev = None
-    pointer.current = head
-    pointer.next = head.next
+    pointer = ListNodePointer(head)
 
     while pointer.current is not None:
         if first_break is not None and second_break is None:
             pointer.current.next = pointer.prev
 
-        if pointer.position == left:
-            first_break = ListNodePointer(pointer)
+        if pointer.position == left - 1:
+            first_break = ListNodePointer(None, pointer)
 
-        if pointer.position == right:
-            second_break = ListNodePointer(pointer)
+        if pointer.position == right - 1:
+            second_break = ListNodePointer(None, pointer)
             break
 
         pointer.move_forward()

@@ -2,7 +2,7 @@
 # https://leetcode.cn/problems/sort-list/
 import random
 import unittest
-from typing import Optional, List
+from typing import Optional
 
 from maximum_binary_tree import TreeNode
 from reverse_linked_list_ii import ListNode, ListNodePointer
@@ -72,58 +72,75 @@ def insertion_sort(head: Optional[ListNode]) -> Optional[ListNode]:
     return head
 
 
-def quick_sort(head: Optional[ListNode]) -> Optional[ListNode]:
+def quick_sort(head: Optional[ListNode]) -> (Optional[ListNode], Optional[ListNode]):
     if head is None:
-        return None
+        return None, None
     elif head.next is None:
-        return head
-
-    nodes = []
-    while head is not None:
-        nodes.append(head)
-        head = head.next
-
-    nodes = __qsort(nodes)
-    return nodes[0]
-
-
-def __qsort(nodes: List[ListNode]) -> List[ListNode]:
-    if 1 == len(nodes):
-        return nodes
-
-    pivot = nodes[random.randint(0, len(nodes) - 1)]
-    pivot_region = []
-    left_region = []
-    right_region = []
-
-    for current in nodes:
-        if current.val > pivot.val:
-            region = right_region
-        elif current.val < pivot.val:
-            region = left_region
+        return head, head
+    elif head.next.next is None:
+        if head.val <= head.next.val:
+            former = head
+            latter = head.next
         else:
-            region = pivot_region
-            if len(region) > 0:
-                region[-1].next = current
+            former = head.next
+            latter = head
 
-        region.append(current)
+        former.next = latter
+        latter.next = None
+        return former, latter
 
-    if len(left_region) > 0:
-        left_region = __qsort(left_region)
-        left_region[-1].next = pivot_region[0]
+    pivot_val = head.val
+
+    left_head = None
+    left_end = None
+    pivot_head = None
+    pivot_end = None
+    right_head = None
+    right_end = None
+
+    cursor_pointer = ListNodePointer(head)
+    while cursor_pointer.current is not None:
+        current = cursor_pointer.bypass()
+        current.next = None
+
+        if current.val < pivot_val:
+            if left_end is None:
+                left_head = current
+                left_end = current
+            else:
+                left_end.next = current
+                left_end = left_end.next
+        elif current.val == pivot_val:
+            if pivot_end is None:
+                pivot_head = current
+                pivot_end = current
+            else:
+                pivot_end.next = current
+                pivot_end = pivot_end.next
+        else:
+            if right_head is None:
+                right_head = current
+                right_end = current
+            else:
+                right_end.next = current
+                right_end = right_end.next
+
+    left_head, left_end = quick_sort(left_head)
+    right_head, right_end = quick_sort(right_head)
+
+    if left_head is not None:
+        head = left_head
+        left_end.next = pivot_head
     else:
-        left_region = []
+        head = pivot_head
 
-    if len(right_region) > 0:
-        right_region = __qsort(right_region)
-        pivot_region[-1].next = right_region[0]
-        right_region[-1].next = None
+    if right_head is not None:
+        pivot_end.next = right_head
+        end = right_end
     else:
-        right_region = []
+        end = pivot_end
 
-    nodes = left_region + pivot_region + right_region
-    nodes[-1].next = None
-    return nodes
+    return head, end
 
 
 def merge_sort(head: Optional[ListNode]) -> Optional[ListNode]:
@@ -291,7 +308,7 @@ class TestReverseLinkedListII(unittest.TestCase):
             n = ListNode(i, nodes[-1]) if len(nodes) > 0 else ListNode(i)
             nodes.append(n)
 
-        head = quick_sort(nodes[-1])
+        head, _ = quick_sort(nodes[-1])
         sorted_list = []
         while head is not None:
             sorted_list.append(head.val)

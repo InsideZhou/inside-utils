@@ -143,81 +143,114 @@ def quick_sort(head: Optional[ListNode]) -> (Optional[ListNode], Optional[ListNo
     return head, end
 
 
-def merge_sort(head: Optional[ListNode]) -> Optional[ListNode]:
+# noinspection PyCompatibility
+def merge_sort(head: Optional[ListNode]) -> (Optional[ListNode], Optional[ListNode]):
     if head is None:
         return None
     elif head.next is None:
         return head
 
-    cursor_pointer = ListNodePointer(head)
-    cursor_pointer.current = head
-    cursor_pointer.next = head.next
+    turn_index = 0
+    booth_length = pow(2, turn_index)
+    group_length = booth_length * 2
 
-    mid_pointer = ListNodePointer(None, cursor_pointer)
-    sorted_pointer = ListNodePointer(None, cursor_pointer)
+    cursor_index = 0
+    cursor = head
 
-    while cursor_pointer.current is not None:
-        if mid_pointer.position < (cursor_pointer.position - sorted_pointer.position) // 2 + sorted_pointer.position:
-            mid_pointer.move_forward()
+    group_end: Optional[ListNode] = None
 
-        if sorted_pointer.next is not None and sorted_pointer.current.val < sorted_pointer.next.val:
-            mid_pointer.move_forward()
-            sorted_pointer.move_forward()
+    former_booths_head: Optional[ListNode] = None
+    former_booths_end: Optional[ListNode] = None
 
-        cursor_pointer.move_forward()
+    latter_booths_head: Optional[ListNode] = None
+    latter_booths_end: Optional[ListNode] = None
 
-    if sorted_pointer.position == cursor_pointer.position:
-        return head
+    while True:
+        current = cursor
+        booth_index = cursor_index % group_length
+        if 0 == booth_index:
+            former_booths_head = current
+            former_booths_end = current
+        elif 0 < booth_index < booth_length:
+            former_booths_end.next = current
+            former_booths_end = former_booths_end.next
+        elif booth_index == booth_length:
+            latter_booths_head = current
+            latter_booths_end = current
+        else:
+            latter_booths_end.next = current
+            latter_booths_end = latter_booths_end.next
 
-    cursor_head = mid_pointer.next
-    mid_pointer.current.next = None
+        cursor = cursor.next
+        cursor_index += 1
 
-    if sorted_pointer.position == mid_pointer.position:
-        merged_head = __merge(head, merge_sort(cursor_head))
-        return merged_head
+        if booth_index == group_length - 1 or cursor is None:
+            former_booths_end.next = None
+            if latter_booths_end is not None:
+                latter_booths_end.next = None
 
-    mid_head = sorted_pointer.next
-    sorted_pointer.current.next = None
+            prev_group_end = group_end
+            group_head, group_end = merge(former_booths_head, latter_booths_head)
 
-    merged_head = __merge(head, __merge(merge_sort(mid_head), merge_sort(cursor_head)))
-    return merged_head
+            if prev_group_end is not None:
+                prev_group_end.next = group_head
+
+            if cursor_index <= group_length:
+                head = group_head
+
+            former_booths_head = None
+            former_booths_end = None
+            latter_booths_head = None
+            latter_booths_end = None
+
+        if cursor is None:
+            if cursor_index <= group_length:
+                break
+
+            # start next turn
+            turn_index += 1
+            booth_length = pow(2, turn_index)
+            group_length = booth_length * 2
+
+            cursor_index = 0
+            cursor = head
+
+            former_booths_head = None
+            former_booths_end = None
+            latter_booths_head = None
+            latter_booths_end = None
+            group_end = None
+
+    if group_end is not None:
+        group_end.next = None
+
+    return head, group_end
 
 
-def __merge(left_node: Optional[ListNode], right_node: Optional[ListNode]) -> Optional[ListNode]:
-    if left_node is None:
-        return right_node
-    elif right_node is None:
-        return left_node
-
+def merge(left_node: Optional[ListNode], right_node: Optional[ListNode]) -> (Optional[ListNode], Optional[ListNode]):
     head = ListNode()
     tail = head
 
-    left_pointer = ListNodePointer(left_node)
-    right_pointer = ListNodePointer(right_node)
-
-    while left_pointer.current is not None or right_pointer.current is not None:
-        left = left_pointer.current
-        right = right_pointer.current
-
-        if left is None:
-            current = right
-            right_pointer.move_forward()
-        elif right is None:
-            current = left
-            left_pointer.move_forward()
-        elif left.val <= right.val:
-            current = left
-            left_pointer.move_forward()
+    while left_node is not None or right_node is not None:
+        if left_node is None:
+            current = right_node
+            right_node = right_node.next
+        elif right_node is None:
+            current = left_node
+            left_node = left_node.next
+        elif left_node.val <= right_node.val:
+            current = left_node
+            left_node = left_node.next
         else:
-            current = right
-            right_pointer.move_forward()
+            current = right_node
+            right_node = right_node.next
 
         current.next = None
         tail.next = current
         tail = current
 
     head = head.next
-    return head
+    return head, tail
 
 
 # noinspection DuplicatedCode
@@ -275,7 +308,7 @@ class TestReverseLinkedListII(unittest.TestCase):
         i = ListNode(19, h)
         j = ListNode(4, i)
 
-        head = insertion_sort(j)
+        head = bst_sort(j)
         sorted_list = []
         while head is not None:
             sorted_list.append(head.val)
@@ -291,7 +324,7 @@ class TestReverseLinkedListII(unittest.TestCase):
             n = ListNode(i, nodes[-1]) if len(nodes) > 0 else ListNode(i)
             nodes.append(n)
 
-        head = insertion_sort(nodes[-1])
+        head, _ = merge_sort(nodes[-1])
         sorted_list = []
         while head is not None:
             sorted_list.append(head.val)
@@ -315,20 +348,6 @@ class TestReverseLinkedListII(unittest.TestCase):
             head = head.next
 
         self.assertEqual(list(range(50000)), sorted_list)
-
-    def testMergeSort(self):
-        a = ListNode(1)
-        b = ListNode(4, a)
-        c = ListNode(9, b)
-        d = ListNode(2, c)
-
-        head = merge_sort(d)
-        sorted_list = []
-        while head is not None:
-            sorted_list.append(head.val)
-            head = head.next
-
-        self.assertEqual([1, 2, 4, 9], sorted_list)
 
 
 if __name__ == '__main__':

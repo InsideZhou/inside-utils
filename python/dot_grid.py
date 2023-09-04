@@ -88,12 +88,11 @@ class DotGrid:
 
         # 遍历最长路径的过程中，也生成符合要求的短路径
         if len(pattern) >= minimum_dots:
-            patterns.append(pattern[:])
+            patterns.append(pattern)
 
         indexes = [i for i in dot.adjacency_dots if self.dots[i].value not in pattern]
-        if len(indexes) > 0:
-            for i in indexes:
-                self.__fulfill_pattern(minimum_dots, i, patterns, pattern[:])
+        for i in indexes:
+            self.__fulfill_pattern(minimum_dots, i, patterns, pattern[:])
 
 
 # noinspection PyCompatibility

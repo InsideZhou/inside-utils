@@ -5,7 +5,7 @@ from __future__ import annotations
 import unittest
 from typing import Optional
 
-from maximum_binary_tree import TreeNode
+from leetcode.validate_binary_search_tree import TreeNode
 
 
 def flatten(root: Optional[TreeNode]) -> None:

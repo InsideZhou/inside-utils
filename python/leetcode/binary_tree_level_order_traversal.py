@@ -4,7 +4,7 @@ import unittest
 from collections import deque
 from typing import Optional, List
 
-from leetcode.maximum_binary_tree import TreeNode
+from leetcode.validate_binary_search_tree import TreeNode
 
 
 def level_order(root: Optional[TreeNode]) -> List[List[int]]:

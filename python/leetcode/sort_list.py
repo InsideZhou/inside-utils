@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # https://leetcode.cn/problems/sort-list/
+from __future__ import annotations
 import random
 import unittest
 from typing import Optional
 
-from maximum_binary_tree import TreeNode
+from leetcode.validate_binary_search_tree import TreeNode
 from reverse_linked_list_ii import ListNode, ListNodePointer
 
 
@@ -18,7 +19,7 @@ def bst_sort(head: Optional[ListNode]) -> Optional[ListNode]:
     tree = TreeNode(head.val)
 
     while head.next is not None:
-        tree.bst_add(head.next.val)
+        tree.add(head.next.val)
         head = head.next
 
     tree_nodes = tree.inorder_traversal()

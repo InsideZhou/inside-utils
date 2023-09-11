@@ -5,8 +5,8 @@ import random
 import unittest
 from typing import Optional
 
+from leetcode.reverse_linked_list_ii import ListNode, ListNodePointer
 from leetcode.validate_binary_search_tree import TreeNode
-from reverse_linked_list_ii import ListNode, ListNodePointer
 
 
 # 利用二叉搜索树排序，如果建立的树近似于单链表，就失去了二叉树的优势，不适合在已经近乎有序的数据集上使用。

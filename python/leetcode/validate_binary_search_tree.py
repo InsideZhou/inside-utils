@@ -9,6 +9,32 @@ from leetcode.binary_tree_level_order_traversal import TreeNode
 
 
 class BinarySearchTreeNode(TreeNode):
+    def max_value(self) -> int:
+        node = self
+        while node.right is not None:
+            node = node.right
+
+        return node.val
+
+    def min_value(self) -> int:
+        node = self
+        while node.left is not None:
+            node = node.left
+
+        return node.val
+
+    def find_value(self, key: int) -> Optional[BinarySearchTreeNode]:
+        node = self
+        while node is not None:
+            if key < node.val:
+                node = node.left
+            elif node.val < key:
+                node = node.right
+            else:
+                return node
+
+        return None
+
     def add(self, val: int) -> None:
         node = self
 
@@ -52,20 +78,6 @@ class BinarySearchTreeNode(TreeNode):
             self.right = node if self.right is None else self.right.add_node(node)
 
         return self
-
-    def max_value(self) -> int:
-        node = self
-        while node.right is not None:
-            node = node.right
-
-        return node.val
-
-    def min_value(self) -> int:
-        node = self
-        while node.left is not None:
-            node = node.left
-
-        return node.val
 
     # noinspection PyUnresolvedReferences
     def remove_node(self, key: int) -> Optional[BinarySearchTreeNode]:

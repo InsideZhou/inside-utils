@@ -5,10 +5,10 @@ from __future__ import annotations
 import unittest
 from typing import Optional, List
 
-from leetcode.sort_list import BinarySearchTreeNode
+from leetcode.binary_tree_level_order_traversal import TreeNode
 
 
-class MaximumBinaryTreeNode(BinarySearchTreeNode):
+class MaximumBinaryTreeNode(TreeNode):
     @staticmethod
     def construct_maximum_binary_tree(nums: List[int]) -> Optional[MaximumBinaryTreeNode]:
         if 0 == len(nums):

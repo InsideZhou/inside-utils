@@ -5,10 +5,10 @@ from __future__ import annotations
 import unittest
 from typing import Optional
 
-from leetcode.validate_binary_search_tree import TreeNode
+from leetcode.validate_binary_search_tree import BinarySearchTreeNode
 
 
-def flatten(root: Optional[TreeNode]) -> None:
+def flatten(root: Optional[BinarySearchTreeNode]) -> None:
     if root is None:
         return
 
@@ -32,20 +32,20 @@ def flatten(root: Optional[TreeNode]) -> None:
 
 class TestFlattenBinaryTreeToLinkedList(unittest.TestCase):
     def testBasic(self):
-        a = TreeNode(3)
-        b = TreeNode(4)
-        c = TreeNode(6)
+        a = BinarySearchTreeNode(3)
+        b = BinarySearchTreeNode(4)
+        c = BinarySearchTreeNode(6)
 
-        d = TreeNode(2, a, b)
-        e = TreeNode(5, right=c)
+        d = BinarySearchTreeNode(2, a, b)
+        e = BinarySearchTreeNode(5, right=c)
 
-        root = TreeNode(1, d, e)
+        root = BinarySearchTreeNode(1, d, e)
 
         flatten(root)
         self.assertEqual([1, None, 2, None, 3, None, 4, None, 5, None, 6], root.preorder_traversal_for_value())
 
     def testSimple(self):
-        root = TreeNode(0)
+        root = BinarySearchTreeNode(0)
         flatten(root)
         self.assertEqual([0], root.preorder_traversal_for_value())
 

@@ -6,7 +6,7 @@ import unittest
 from typing import Optional
 
 from leetcode.reverse_linked_list_ii import ListNode, ListNodePointer
-from leetcode.validate_binary_search_tree import TreeNode
+from leetcode.validate_binary_search_tree import BinarySearchTreeNode
 
 
 # 利用二叉搜索树排序，如果建立的树近似于单链表，就失去了二叉树的优势，不适合在已经近乎有序的数据集上使用。
@@ -16,7 +16,7 @@ def bst_sort(head: Optional[ListNode]) -> Optional[ListNode]:
     elif head.next is None:
         return head
 
-    tree = TreeNode(head.val)
+    tree = BinarySearchTreeNode(head.val)
 
     while head.next is not None:
         tree.add(head.next.val)

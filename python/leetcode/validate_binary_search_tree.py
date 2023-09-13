@@ -5,27 +5,25 @@ from __future__ import annotations
 import unittest
 from typing import Optional
 
+from leetcode.binary_tree_level_order_traversal import TreeNode
 
-class TreeNode(object):
-    def __init__(self, val=0, left: Optional[TreeNode] = None, right: Optional[TreeNode] = None, weight=1):
-        self.weight = weight
-        self.val = val
-        self.left = left
-        self.right = right
 
+class BinarySearchTreeNode(TreeNode):
     def add(self, val: int) -> None:
         node = self
 
         while True:
+            node.child_count += 1
+
             if val < node.val:
                 if node.left is None:
-                    node.left = TreeNode(val)
+                    node.left = BinarySearchTreeNode(val)
                     break
                 else:
                     node = node.left
             elif node.val < val:
                 if node.right is None:
-                    node.right = TreeNode(val)
+                    node.right = BinarySearchTreeNode(val)
                     break
                 else:
                     node = node.right
@@ -33,137 +31,130 @@ class TreeNode(object):
                 node.weight += 1
                 break
 
+    def add_node(self, node: BinarySearchTreeNode) -> BinarySearchTreeNode:
+        self.child_count += node.child_count
+
+        if node.val == self.val:
+            self.weight += node.weight
+
+            if self.left is None:
+                self.left = node.left
+            else:
+                self.left = self.left.add_node(node.left) if node.left is not None else self.left
+
+            if self.right is None:
+                self.right = node.right
+            else:
+                self.right = self.right.add_node(node.right) if node.right is not None else self.right
+        elif node.val < self.val:
+            self.left = node if self.left is None else self.left.add_node(node)
+        else:
+            self.right = node if self.right is None else self.right.add_node(node)
+
+        return self
+
     def max_value(self) -> int:
-        candidates = [self.val]
+        node = self
+        while node.right is not None:
+            node = node.right
 
-        if self.left is not None:
-            candidates.append(self.left.max_value())
-
-        if self.right is not None:
-            candidates.append(self.right.max_value())
-
-        return max(candidates)
+        return node.val
 
     def min_value(self) -> int:
-        candidates = [self.val]
+        node = self
+        while node.left is not None:
+            node = node.left
 
-        if self.left is not None:
-            candidates.append(self.left.min_value())
+        return node.val
 
-        if self.right is not None:
-            candidates.append(self.right.min_value())
-
-        return min(candidates)
-
-    def is_valid_bst(self) -> bool:
-        if self.left is None and self.right is None:
-            return True
-        elif self.left is None:
-            return self.right.is_valid_bst() and self.val < self.right.min_value()
-        elif self.right is None:
-            return self.left.is_valid_bst() and self.left.max_value() < self.val
-        else:
-            return self.left.is_valid_bst() and self.right.is_valid_bst() and self.left.max_value() < self.val < self.right.min_value()
-
-    def level_order_traversal_for_value(self) -> List[int]:
-        nums = []
-        nodes = [self]
-
-        while True:
-            try:
-                node = nodes.pop()
-
-                if node is None:
-                    nums.append(None)
-                    continue
-
-                nums.append(node.val)
-                nodes.insert(0, node.left)
-                nodes.insert(0, node.right)
-            except IndexError:
-                break
-            finally:
-                if all([n is None for n in nodes]):
+    # noinspection PyUnresolvedReferences
+    def remove_node(self, key: int) -> Optional[BinarySearchTreeNode]:
+        parent = None
+        root = self
+        node = self
+        while node is not None:
+            if node.val < key:
+                parent = node
+                node = node.right
+            elif node.val > key:
+                parent = node
+                node = node.left
+            else:
+                node.weight -= 1
+                if node.weight > 0:
                     break
 
-        return nums
+                if node.right is None:
+                    middle_root = node.left
+                elif node.left is None:
+                    middle_root = node.right
+                elif node.left.child_count > node.right.child_count:
+                    middle_root = node.left.add_node(node.right)
+                else:
+                    middle_root = node.right.add_node(node.left)
 
-    def preorder_traversal_for_value(self) -> List[Optional[int]]:
-        if self.left is None and self.right is None:
-            return [self.val]
+                if parent is None:
+                    root = middle_root
+                    break
 
-        left_list = [None] if self.left is None else self.left.preorder_traversal_for_value()
-        right_list = [None] if self.right is None else self.right.preorder_traversal_for_value()
+                if parent.left is node:
+                    parent.left = middle_root
+                elif parent.right is node:
+                    parent.right = middle_root
 
-        return [self.val] + left_list + right_list
-
-    def inorder_traversal(self) -> List[TreeNode]:
-        operator_expand = 1
-        operator_eval = 2
-
-        operators = [operator_expand]
-        nodes = [self]
-        result = []
-
-        while True:
-            try:
-                node = nodes.pop()
-                operator = operators.pop()
-            except IndexError:
                 break
 
-            if operator == operator_expand:
-                if node.right is not None:
-                    nodes.append(node.right)
-                    operators.append(operator_expand)
+        return root
 
-                nodes.append(node)
-                operators.append(operator_eval)
 
-                if node.left is not None:
-                    nodes.append(node.left)
-                    operators.append(operator_expand)
-            elif operator == operator_eval:
-                result.append(node)
-
-        return result
+# noinspection PyUnresolvedReferences,PyTypeChecker
+def is_valid_bst(root: BinarySearchTreeNode) -> bool:
+    if root.left is None and root.right is None:
+        return True
+    elif root.left is None:
+        return is_valid_bst(root.right) and root.val < root.right.min_value()
+    elif root.right is None:
+        return is_valid_bst(root.left) and root.left.max_value() < root.val
+    else:
+        return is_valid_bst(root.left) and is_valid_bst(
+            root.right) and root.left.max_value() < root.val < root.right.min_value()
 
 
 class TestFlattenBinaryTreeToLinkedList(unittest.TestCase):
     def testSame(self):
-        b = TreeNode(2)
-        c = TreeNode(2)
+        b = BinarySearchTreeNode(2)
+        c = BinarySearchTreeNode(2)
 
-        tree = TreeNode(2, b, c)
-        self.assertFalse(tree.is_valid_bst())
+        tree = BinarySearchTreeNode(2, b, c)
+        self.assertFalse(is_valid_bst(tree))
 
     def testSimple(self):
-        b = TreeNode(1)
-        c = TreeNode(3)
+        b = BinarySearchTreeNode(1)
+        c = BinarySearchTreeNode(3)
 
-        tree = TreeNode(2, b, c)
-        self.assertTrue(tree.is_valid_bst())
+        tree = BinarySearchTreeNode(2, b, c)
+        self.assertTrue(is_valid_bst(tree))
 
     def testBasic(self):
-        a = TreeNode(3)
-        b = TreeNode(6)
+        a = BinarySearchTreeNode(3)
+        b = BinarySearchTreeNode(6)
 
-        c = TreeNode(4, a, b)
-        b = TreeNode(2)
+        c = BinarySearchTreeNode(4, a, b)
+        b = BinarySearchTreeNode(2)
 
-        tree = TreeNode(5, b, c)
-        self.assertFalse(tree.is_valid_bst())
+        tree = BinarySearchTreeNode(5, b, c)
+        self.assertFalse(is_valid_bst(tree))
 
     def testStandard(self):
-        a = TreeNode(27)
-        b = TreeNode(19, right=a)
-        c = TreeNode(26, left=b)
+        a = BinarySearchTreeNode(27)
+        b = BinarySearchTreeNode(19, right=a)
+        c = BinarySearchTreeNode(26, left=b)
 
-        d = TreeNode(56)
-        e = TreeNode(47, right=d)
+        d = BinarySearchTreeNode(56)
+        e = BinarySearchTreeNode(47, right=d)
 
-        tree = TreeNode(32, c, e)
-        self.assertFalse(tree.is_valid_bst())
+        tree = BinarySearchTreeNode(32, c, e)
+        self.assertFalse(is_valid_bst(tree))
 
 
 if __name__ == '__main__':

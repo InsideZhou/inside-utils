@@ -1,10 +1,110 @@
 #!/usr/bin/env python
 # https://leetcode.cn/problems/binary-tree-level-order-traversal/
+from __future__ import annotations
+
 import unittest
 from collections import deque
 from typing import Optional, List
 
-from leetcode.validate_binary_search_tree import TreeNode
+
+class TreeNode(object):
+    # noinspection PyUnresolvedReferences
+    def __init__(self, val=0, left: Optional[TreeNode] = None, right: Optional[TreeNode] = None, weight=1):
+        self.weight = weight
+        self.val = val
+        self.left = left
+        self.right = right
+
+        self.child_count = 0
+        if self.left is not None:
+            self.child_count += self.left.child_count
+        if self.right is not None:
+            self.child_count += self.right.child_count
+
+    def max_value(self) -> int:
+        candidates = [self.val]
+
+        if self.left is not None:
+            candidates.append(self.left.max_value())
+
+        if self.right is not None:
+            candidates.append(self.right.max_value())
+
+        return max(candidates)
+
+    def min_value(self) -> int:
+        candidates = [self.val]
+
+        if self.left is not None:
+            candidates.append(self.left.min_value())
+
+        if self.right is not None:
+            candidates.append(self.right.min_value())
+
+        return min(candidates)
+
+    def level_order_traversal_for_value(self) -> List[int]:
+        nums = []
+        nodes = [self]
+
+        while True:
+            try:
+                node = nodes.pop()
+
+                if node is None:
+                    nums.append(None)
+                    continue
+
+                nums.append(node.val)
+                nodes.insert(0, node.left)
+                nodes.insert(0, node.right)
+            except IndexError:
+                break
+            finally:
+                if all([n is None for n in nodes]):
+                    break
+
+        return nums
+
+    def preorder_traversal_for_value(self) -> List[Optional[int]]:
+        if self.left is None and self.right is None:
+            return [self.val]
+
+        left_list = [None] if self.left is None else self.left.preorder_traversal_for_value()
+        right_list = [None] if self.right is None else self.right.preorder_traversal_for_value()
+
+        return [self.val] + left_list + right_list
+
+    def inorder_traversal(self) -> List[TreeNode]:
+        operator_expand = 1
+        operator_eval = 2
+
+        operators = [operator_expand]
+        nodes = [self]
+        result = []
+
+        while True:
+            try:
+                node = nodes.pop()
+                operator = operators.pop()
+            except IndexError:
+                break
+
+            if operator == operator_expand:
+                if node.right is not None:
+                    nodes.append(node.right)
+                    operators.append(operator_expand)
+
+                nodes.append(node)
+                operators.append(operator_eval)
+
+                if node.left is not None:
+                    nodes.append(node.left)
+                    operators.append(operator_expand)
+            elif operator == operator_eval:
+                result.append(node)
+
+        return result
 
 
 def level_order(root: Optional[TreeNode]) -> List[List[int]]:
@@ -26,6 +126,7 @@ def level_order(root: Optional[TreeNode]) -> List[List[int]]:
                 level_group.append(None)
                 continue
 
+            # noinspection PyUnresolvedReferences
             level_group.append(node.val)
             nodes.append((next_level, node.left))
             nodes.append((next_level, node.right))

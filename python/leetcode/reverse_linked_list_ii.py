@@ -3,10 +3,24 @@
 from __future__ import annotations
 
 import unittest
-from typing import Optional
+from typing import Optional, List
 
 
 class ListNode:
+    @staticmethod
+    def construct_from_values(values: List[int]) -> ListNode:
+        head = None
+        node = None
+        for val in values:
+            if node is None:
+                node = ListNode(val)
+                head = node
+            else:
+                node.next = ListNode(val)
+                node = node.next
+
+        return head
+
     def __init__(self, val=0, next_node: ListNode = None):
         self.val = val
         self.next = next_node
@@ -20,6 +34,12 @@ class ListNode:
 
     def connect(self, next_node: ListNode):
         self.next = next_node
+
+    def to_values(self) -> List[int]:
+        node = self
+        while node is not None:
+            yield node.val
+            node = node.next
 
 
 # noinspection PyCompatibility

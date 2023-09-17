@@ -73,26 +73,24 @@ class DotGrid:
     def generate_patterns(self, minimum_dots: int = 4) -> List[List[int]]:
         result = []
 
-        for i in range(len(self.dots)):
-            self.__fulfill_pattern(minimum_dots, i, result)
+        def trace_dots(index: int, path: List[int] = None):
+            dot = self.dots[index]
+            if path is None:
+                path = [dot.value]
+            else:
+                path.append(dot.value)
+
+            if len(path) >= minimum_dots:
+                result.append(path)
+
+            indexes = [i for i in dot.adjacency_dots if self.dots[i].value not in path]
+            for i in indexes:
+                trace_dots(i, path[:])
+
+        for idx in range(len(self.dots)):
+            trace_dots(idx)
 
         return result
-
-    # 图顶点的遍历
-    def __fulfill_pattern(self, minimum_dots: int, index: int, patterns: List[List[int]], pattern: List[int] = None):
-        dot = self.dots[index]
-        if pattern is None:
-            pattern = [dot.value]
-        else:
-            pattern.append(dot.value)
-
-        # 遍历最长路径的过程中，也生成符合要求的短路径
-        if len(pattern) >= minimum_dots:
-            patterns.append(pattern)
-
-        indexes = [i for i in dot.adjacency_dots if self.dots[i].value not in pattern]
-        for i in indexes:
-            self.__fulfill_pattern(minimum_dots, i, patterns, pattern[:])
 
 
 # noinspection PyCompatibility

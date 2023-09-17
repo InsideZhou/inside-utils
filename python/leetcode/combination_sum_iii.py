@@ -10,40 +10,23 @@ def combination_sum_iii(k: int, n: int, pool_start=1, pool_end=9) -> List[List[i
     elif k >= n:
         return []
 
-    num_pool = [i for i in range(pool_start, pool_end + 1)]
-
-    minimum, maximum = 0, 0
-    for i in range(k):
-        minimum += i
-
-    for i in range(pool_end, pool_end - k, -1):
-        maximum += i
-
-    if n < minimum or n > maximum:
-        return []
-
     result = []
 
-    for start in range(n):
-        candidates = []
-        for offset in range(k):
-            index = start + offset
-            if index == n or index > pool_end - pool_start:
-                return result
-
-            candidates.append(num_pool[index])
-
-        sum_candidates = sum(candidates)
-        if sum_candidates > n:
-            break
-        elif sum_candidates == n:
-            result.append(candidates[:])
-            break
-
-        child_k, child_n, child_pool_start = k - 1, n - candidates[0], candidates[0] + 1
+    for start in range(pool_start, pool_end + 1):
+        child_k, child_n, child_pool_start = k - 1, n - start, start + 1
         child_result = combination_sum_iii(child_k, child_n, child_pool_start)
+
         for c in child_result:
-            result.append(candidates[0:1] + c)
+            candidate = [start] + c
+            sum_of_combination = sum(candidate)
+            if sum_of_combination == n:
+                result.append(candidate)
+            elif sum_of_combination > n:
+                break
+        else:
+            continue
+
+        break
 
     return result
 
@@ -60,6 +43,10 @@ class TestCombinationSumIII(unittest.TestCase):
 
     def testK2N18(self):
         self.assertEqual([], combination_sum_iii(2, 18))
+
+    def testK3N15(self):
+        self.assertEqual([[1, 5, 9], [1, 6, 8], [2, 4, 9], [2, 5, 8], [2, 6, 7], [3, 4, 8], [3, 5, 7], [4, 5, 6]],
+                         combination_sum_iii(3, 15))
 
 
 if __name__ == '__main__':

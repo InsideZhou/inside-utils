@@ -1,0 +1,34 @@
+#!/usr/sbin/nft -f
+
+
+table ip host {
+    define safehosts = {
+        192.168.0.0/16,
+        10.0.4.16/22,
+        127.0.0.1
+    }
+
+    set ratelimit {
+        typeof ip saddr
+        size 4294967296
+    }
+
+    set connlimit {
+        typeof ip saddr
+        size 4294967296
+    }
+
+    chain ssh {
+        type filter hook input priority filter
+
+        ip saddr != $safehosts tcp dport ssh ct state new add @ratelimit { ip saddr limit rate over 8/minute } drop
+        tcp dport ssh accept # 忽略较低优先级chains
+    }
+
+    chain default {
+        type filter hook input priority filter + 100
+
+        ip saddr != $safehosts meta l4proto tcp ct state new add @connlimit { ip saddr ct count over 16 } reject with tcp reset
+        ip saddr != $safehosts meta l4proto tcp ct state new add @ratelimit { ip saddr limit rate over 16/minute } reject with tcp reset
+    }
+}

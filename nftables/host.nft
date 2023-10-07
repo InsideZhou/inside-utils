@@ -10,18 +10,18 @@ table ip host {
 
     set ratelimit {
         typeof ip saddr
-        size 4294967296
+        size 1048576
     }
 
     set connlimit {
         typeof ip saddr
-        size 4294967296
+        size 1048576
     }
 
     chain ssh {
         type filter hook input priority filter
 
-        ip saddr != $safehosts tcp dport ssh ct state new add @ratelimit { ip saddr limit rate over 8/minute } drop
+        ip saddr != $safehosts tcp dport ssh ct state new ct count over 2 add @ratelimit { ip saddr limit rate over 2/minute } drop
         tcp dport ssh accept # 忽略较低优先级chains
     }
 
@@ -29,6 +29,5 @@ table ip host {
         type filter hook input priority filter + 100
 
         ip saddr != $safehosts meta l4proto tcp ct state new add @connlimit { ip saddr ct count over 16 } reject with tcp reset
-        ip saddr != $safehosts meta l4proto tcp ct state new add @ratelimit { ip saddr limit rate over 16/minute } reject with tcp reset
     }
 }

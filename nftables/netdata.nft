@@ -8,14 +8,15 @@ table ip netdata {
         127.0.0.1
     }
 
-    set connlimit {
+    set ratelimit {
         typeof ip saddr
-        size 4294967296
+        size 1048576
     }
 
     chain netdata {
         type filter hook input priority filter
 
-        ip saddr != $safehosts tcp dport 19999 ct state new add @connlimit { ip saddr ct count over 4 } reject with tcp reset
+	ip saddr != $safehosts tcp dport 19999 ct state new ct count over 6 add @ratelimit { ip saddr limit rate over 6/minute } reject with tcp reset
+	tcp dport 19999 accept
     }
 }

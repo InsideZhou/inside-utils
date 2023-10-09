@@ -1,0 +1,33 @@
+#!/usr/sbin/nft -f
+
+
+table ip web {
+    define safehosts = {
+        192.168.0.0/16,
+        10.0.4.0/22,
+        127.0.0.1
+    }
+
+    set connlimit {
+        typeof ip saddr
+        size 1048576
+    }
+
+    set ratelimit {
+        typeof ip saddr
+        size 1048576
+    }
+
+    chain netdata {
+        type filter hook input priority filter
+
+		ip saddr != $safehosts tcp dport 19999 ct state new add @connlimit { ip saddr ct count over 6 } reject with tcp reset
+    }
+
+    chain http {
+        type filter hook input priority filter
+
+		ip saddr != $safehosts tcp dport { http, https } ct state new ct count over 6 add @ratelimit { ip saddr limit rate over 6/second } reject with tcp reset
+		tcp dport { http, https } accept
+    }
+}

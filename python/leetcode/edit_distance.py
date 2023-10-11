@@ -5,6 +5,10 @@ from collections import deque
 
 
 def min_distance(base_word1: str, base_word2: str) -> int:
+    """
+    当前的算法思路的基础是：要从A字符串以最少的步骤改成B字符串，则需要按相同字母对齐俩字符串，对齐字母数量越多的方案，则需要的修改量越少。
+    """
+
     base_word1_length = len(base_word1)
     base_word2_length = len(base_word2)
 

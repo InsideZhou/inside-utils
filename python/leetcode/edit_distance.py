@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # https://leetcode.cn/problems/edit-distance/
-import unittest
+import numpy, unittest
 from collections import deque
+from typing import List
 
 
 def min_distance(base_word1: str, base_word2: str) -> int:
     """
-    当前的算法思路的基础是：要从A字符串以最少的步骤改成B字符串，则需要按相同字母对齐俩字符串，对齐字母数量越多的方案，则需要的修改量越少。
+    本算法思路的基础是：要从A字符串以最少的步骤改成B字符串，则需要按相同字母对齐俩字符串，对齐字母数量越多的方案，则需要的修改量越少。
     """
 
     base_word1_length = len(base_word1)
@@ -98,33 +99,94 @@ def min_distance(base_word1: str, base_word2: str) -> int:
     return distance
 
 
+def min_distance_matrix(base_word1: str, base_word2: str) -> List[List[int]]:
+    """
+    动态规划
+    """
+    base_word1_length = len(base_word1)
+    base_word2_length = len(base_word2)
+
+    matrix_rows = base_word1_length + 1
+    matrix_cols = base_word2_length + 1
+    matrix = [[0] * matrix_cols for _ in range(matrix_rows)]
+
+    if base_word1 == '' or base_word2 == '':
+        return matrix
+
+    matrix[0][0] = 0 if base_word1[0] == base_word2[0] else 1
+
+    for r in range(matrix_rows):
+        matrix[r][0] = r
+
+    for c in range(matrix_cols):
+        matrix[0][c] = c
+
+    for r in range(1, matrix_rows):
+        for c in range(1, matrix_cols):
+            matrix[r][c] = min(matrix[r][c - 1] + 1,
+                               matrix[r - 1][c] + 1,
+                               matrix[r - 1][c - 1] \
+                                   if base_word1[r - 1] == base_word2[c - 1] \
+                                   else matrix[r - 1][c - 1] + 1)
+
+    return matrix
+
+
+def min_distance_dp(base_word1: str, base_word2: str) -> int:
+    base_word1_length = len(base_word1)
+    base_word2_length = len(base_word2)
+
+    if base_word1 == '':
+        return base_word2_length
+    elif base_word2 == '':
+        return base_word1_length
+
+    return min_distance_matrix(base_word1, base_word2)[base_word1_length][base_word2_length]
+
+
+def print_matrix(array):
+    print(numpy.asmatrix(numpy.array(array)))
+
+
 class TestStringCompression(unittest.TestCase):
     def testBasic(self):
         self.assertEqual(2, min_distance("se", "os"))
+        self.assertEqual(2, min_distance_dp("se", "os"))
 
     def testSimple(self):
         self.assertEqual(3, min_distance("horse", "ros"))
+        self.assertEqual(3, min_distance_dp("horse", "ros"))
 
     def testAllSame(self):
         self.assertEqual(0, min_distance("archlinux", "archlinux"))
+        self.assertEqual(0, min_distance_dp("archlinux", "archlinux"))
 
     def testMidSame(self):
         self.assertEqual(8, min_distance("intentionosx", "executionwin"))
+        self.assertEqual(8, min_distance_dp("intentionosx", "executionwin"))
 
     def testTailSame(self):
         self.assertEqual(5, min_distance("intention", "execution"))
+        self.assertEqual(5, min_distance_dp("intention", "execution"))
 
     def testHeadSame(self):
         self.assertEqual(5, min_distance("noitnetni", "noitucexe"))
+        self.assertEqual(5, min_distance_dp("noitnetni", "noitucexe"))
 
     def testAlmostDiff(self):
         self.assertEqual(5, min_distance("apple", "egg"))
+        self.assertEqual(5, min_distance_dp("apple", "egg"))
 
     def testMidDiff(self):
         self.assertEqual(3, min_distance("teacher", "teerer"))
+        self.assertEqual(3, min_distance_dp("teacher", "teerer"))
 
-    def testeMidSame1(self):
+    def testMidSame1(self):
         self.assertEqual(27, min_distance("pneumonoultramicroscopicsilicovolcanoconiosis", "ultramicroscopically"))
+        self.assertEqual(27, min_distance_dp("pneumonoultramicroscopicsilicovolcanoconiosis", "ultramicroscopically"))
+
+    def testSameSequence(self):
+        self.assertEqual(2, min_distance_dp("puu", "u"))
 
 
 if __name__ == '__main__':

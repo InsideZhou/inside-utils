@@ -3,7 +3,7 @@
 import unittest
 from typing import Optional
 
-from leetcode.validate_binary_search_tree import BinarySearchTreeNode
+from leetcode.NO98_validate_binary_search_tree import BinarySearchTreeNode
 
 
 def delete_node(root: Optional[BinarySearchTreeNode], key: int) -> Optional[BinarySearchTreeNode]:

@@ -2,7 +2,7 @@
 # https://leetcode.cn/problems/search-in-a-binary-search-tree/
 import unittest
 
-from leetcode.validate_binary_search_tree import BinarySearchTreeNode
+from leetcode.NO98_validate_binary_search_tree import BinarySearchTreeNode
 
 
 class TestSearchInABinarySearchTree(unittest.TestCase):

@@ -5,7 +5,7 @@ from __future__ import annotations
 import unittest
 from typing import Optional
 
-from leetcode.binary_tree_level_order_traversal import TreeNode
+from leetcode.NO102_binary_tree_level_order_traversal import TreeNode
 
 
 class BinarySearchTreeNode(TreeNode):

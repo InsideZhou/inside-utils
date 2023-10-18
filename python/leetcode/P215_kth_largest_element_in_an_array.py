@@ -3,7 +3,7 @@
 import unittest
 from typing import List
 
-from leetcode.maximum_binary_tree import MaximumBinaryTreeNode
+from leetcode.NO654_maximum_binary_tree import MaximumBinaryTreeNode
 
 
 def find_kth_largest(nums: List[int], k: int) -> int:

@@ -5,7 +5,7 @@ from __future__ import annotations
 import unittest
 from typing import Optional
 
-from leetcode.NO98_validate_binary_search_tree import BinarySearchTreeNode
+from leetcode.P98_validate_binary_search_tree import BinarySearchTreeNode
 
 
 def flatten(root: Optional[BinarySearchTreeNode]) -> None:

@@ -8,6 +8,30 @@ from typing import Optional, List
 
 
 class TreeNode(object):
+    @staticmethod
+    def construct_binary_tree_from_values(values: List[Optional[int]]) -> TreeNode:
+        values_length = len(values)
+
+        def build_node(index: Optional[int]) -> Optional[TreeNode]:
+            val = values[index]
+            if val is None:
+                return None
+
+            node = TreeNode(val)
+
+            left_val_index = 2 * index + 1
+            right_val_index = 2 * (index + 1)
+
+            if left_val_index < values_length:
+                node.left = build_node(left_val_index)
+
+            if right_val_index < values_length:
+                node.right = build_node(right_val_index)
+
+            return node
+
+        return build_node(0)
+
     # noinspection PyUnresolvedReferences
     def __init__(self, val=0, left: Optional[TreeNode] = None, right: Optional[TreeNode] = None, weight=1):
         self.weight = weight

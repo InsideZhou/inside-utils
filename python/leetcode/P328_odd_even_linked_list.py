@@ -3,7 +3,7 @@
 import unittest
 from typing import Optional
 
-from leetcode.NO92_reverse_linked_list_ii import ListNode
+from leetcode.P92_reverse_linked_list_ii import ListNode
 
 
 def odd_even_list(head: Optional[ListNode]) -> Optional[ListNode]:

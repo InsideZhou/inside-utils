@@ -12,13 +12,15 @@ class MinStack:
         self.__min_value = val if self.__min_value is None else min(self.__min_value, val)
         self.__stack.append(val)
 
-    def pop(self) -> None:
+    def pop(self) -> int:
         val = self.__stack.pop()
 
         if len(self.__stack) == 0:
             self.__min_value = None
         else:
             self.__min_value = min(self.__stack)
+
+        return val
 
     def top(self) -> int:
         return self.__stack[-1]

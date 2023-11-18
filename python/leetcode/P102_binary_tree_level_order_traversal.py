@@ -10,27 +10,30 @@ from typing import Optional, List
 class TreeNode(object):
     @staticmethod
     def construct_binary_tree_from_values(values: List[Optional[int]]) -> TreeNode:
-        values_length = len(values)
+        value_queue = deque(values)
+        root = TreeNode(value_queue.popleft())
+        candidates = deque([root])
 
-        def build_node(index: Optional[int]) -> Optional[TreeNode]:
-            val = values[index]
-            if val is None:
-                return None
+        def build_candidate():
+            node = candidates.popleft()
 
-            node = TreeNode(val)
+            left = value_queue.popleft()
+            if left is not None:
+                node.left = TreeNode(left)
+                candidates.append(node.left)
 
-            left_val_index = 2 * index + 1
-            right_val_index = 2 * (index + 1)
+            right = value_queue.popleft()
+            if right is not None:
+                node.right = TreeNode(right)
+                candidates.append(node.right)
 
-            if left_val_index < values_length:
-                node.left = build_node(left_val_index)
+        while True:
+            try:
+                build_candidate()
+            except IndexError:
+                break
 
-            if right_val_index < values_length:
-                node.right = build_node(right_val_index)
-
-            return node
-
-        return build_node(0)
+        return root
 
     # noinspection PyUnresolvedReferences
     def __init__(self, val=0, left: Optional[TreeNode] = None, right: Optional[TreeNode] = None, weight=1):

@@ -6,9 +6,9 @@ from typing import List, Optional
 
 
 class Candidate:
-    def __init__(self, value: int):
+    def __init__(self, value: int, count=1):
         self.value = value
-        self.count = 1
+        self.count = count
 
 
 # 用摩尔投票法实现，空间复杂度是O(1)
@@ -33,23 +33,20 @@ def majority_element(nums: List[int], threshold=3) -> List[int]:
         if replace_none(num):
             continue
 
-        for j in range(threshold - 1):
-            candidate = candidates[j]
+        for j, candidate in enumerate(candidates):
             if candidate is not None:
                 candidate.count -= 1
                 if candidate.count <= 0:
                     candidates[j] = None
 
-    for candidate in candidates:
-        if candidate is not None:
-            candidate.count = 0
+    candidates = [Candidate(value=c.value, count=0) for c in candidates if c is not None]
 
     for num in nums:
         for candidate in candidates:
-            if candidate is not None and num == candidate.value:
+            if num == candidate.value:
                 candidate.count += 1
 
-    return [c.value for c in candidates if c is not None and c.count > len(nums) // threshold]
+    return [c.value for c in candidates if c.count > len(nums) // threshold]
 
 
 class TestMajorityElementIi(unittest.TestCase):

@@ -14,22 +14,19 @@ class TreeNode(object):
         root = TreeNode(value_queue.popleft())
         candidates = deque([root])
 
-        def build_candidate():
-            node = candidates.popleft()
-
-            left = value_queue.popleft()
-            if left is not None:
-                node.left = TreeNode(left)
-                candidates.append(node.left)
-
-            right = value_queue.popleft()
-            if right is not None:
-                node.right = TreeNode(right)
-                candidates.append(node.right)
-
         while True:
             try:
-                build_candidate()
+                node = candidates.popleft()
+
+                left = value_queue.popleft()
+                if left is not None:
+                    node.left = TreeNode(left)
+                    candidates.append(node.left)
+
+                right = value_queue.popleft()
+                if right is not None:
+                    node.right = TreeNode(right)
+                    candidates.append(node.right)
             except IndexError:
                 break
 

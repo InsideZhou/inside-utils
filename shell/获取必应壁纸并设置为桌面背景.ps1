@@ -70,7 +70,7 @@ $imageFolder = "$PSScriptRoot\.bingimg"
 if (Test-Path -Path $imageFolder -PathType Container) {
 	$files = Get-ChildItem -Path $imageFolder
 	if ($files.Count -gt 10) {
-		$files | ForEach-Object { Remove-Item $_.FullName }
+		$files | Sort-Object LastWriteTime | Select-Object -First 1 | ForEach-Object { Remove-Item $_.FullName }
 	}
 }
 else {

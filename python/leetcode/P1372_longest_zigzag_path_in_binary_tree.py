@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # https://leetcode.cn/problems/longest-zigzag-path-in-a-binary-tree/
 import unittest
-from typing import Optional, List, Tuple
+from typing import Optional
 
 from leetcode.P102_binary_tree_level_order_traversal import TreeNode
 

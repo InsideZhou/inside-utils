@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from __future__ import annotations
 
+import math
 import random
 import re
 import string
@@ -15,16 +16,22 @@ class ULID:
     Main feature is distributed and sortable.
     Use 32-based number system, [0-9a-v], 5 bits per character, case-insensitive
     Format: "timestamp_bits-worker_bits-random_bits"
-    Random_bits are statically 48-bits, worker_bits depend on user definition, the rest are timestamp bits.
-    ULID bits is limited by N-bit computer, but under uuid compatibility, it's 128 bits.
+    Random_bits are default to 48-bit, worker_bits are default to 16-bit, the rest are timestamp bits.
+    ULID bits are limited by N-bit computer, but under uuid compatibility, they're 128 bits.
     """
 
     digits = string.digits + string.ascii_lowercase[:22]
     base_bits = 5
+    timestamp_bits = 64
+    worker_bits = 16
     rand_bits = 48
     mask = pow(2, base_bits) - 1
     rand = random.SystemRandom()
     parse_pattern = re.compile("^(\w+)-(\w+)-(\w+)$")
+
+    __timestamp_length = math.ceil(timestamp_bits / base_bits)
+    __worker_length = math.ceil(worker_bits / base_bits)
+    __rand_length = math.ceil(rand_bits / base_bits)
 
     @staticmethod
     def parse(ulid: str) -> ULID:
@@ -39,16 +46,16 @@ class ULID:
         return new_id
 
     @staticmethod
-    def parse_uuid(uuid_str: str, worker_bits: int = 16) -> ULID:
+    def parse_uuid(uuid_str: str) -> ULID:
         uuid_bits = bin(uuid.UUID(uuid_str).int)
 
         new_id = ULID(0)
         new_id.rand_num = int(uuid_bits[-ULID.rand_bits:], 2)
 
         uuid_bits = uuid_bits[:-ULID.rand_bits]
-        new_id.worker_id = int(uuid_bits[-worker_bits:], 2)
+        new_id.worker_id = int(uuid_bits[-ULID.worker_bits:], 2)
 
-        uuid_bits = uuid_bits[:-worker_bits]
+        uuid_bits = uuid_bits[:-ULID.worker_bits]
         new_id.timestamp_millis = int(uuid_bits, 2)
 
         return new_id
@@ -85,9 +92,9 @@ class ULID:
         return f"ULID({self.worker_id})"
 
     def __str__(self):
-        ts = ULID.unsigned_int_to_32base(self.timestamp_millis)
-        worker = ULID.unsigned_int_to_32base(self.worker_id)
-        r = ULID.unsigned_int_to_32base(self.rand_num)
+        ts = ULID.unsigned_int_to_32base(self.timestamp_millis).rjust(ULID.__timestamp_length, "0")
+        worker = ULID.unsigned_int_to_32base(self.worker_id).rjust(ULID.__worker_length, '0')
+        r = ULID.unsigned_int_to_32base(self.rand_num).rjust(ULID.__rand_length, '0')
 
         return f"{ts}-{worker}-{r}"
 
@@ -97,9 +104,9 @@ class ULID:
             and self.worker_id == other.worker_id \
             and self.rand_num == other.rand_num
 
-    def uuid(self, worker_bits: int = 16) -> uuid.UUID:
+    def uuid(self) -> uuid.UUID:
         rand_bytes = self.rand_num.to_bytes(int(ULID.rand_bits / 8), byteorder="big")
-        worker_bytes = self.worker_id.to_bytes(int(worker_bits / 8), byteorder="big")
+        worker_bytes = self.worker_id.to_bytes(int(ULID.worker_bits / 8), byteorder="big")
         ts_bytes = self.timestamp_millis.to_bytes(len(rand_bytes) + len(worker_bytes), byteorder="big")
 
         return uuid.UUID(ts_bytes.hex() + worker_bytes.hex() + rand_bytes.hex())
@@ -126,8 +133,15 @@ class TestULID(unittest.TestCase):
         arr.sort()
         self.assertEqual(["a", "d"], arr)
 
+        arr = ["a", "ab"]
+        arr.sort()
+        self.assertEqual(["a", "ab"], arr)
+
         ulid = ULID(15000)
-        print(ulid, "|", ulid.value(), "|", ulid.uuid())
+        print(ulid, "|", ulid.uuid(), "|", ulid.value())
+
+        ulid = ULID(random.randint(0, 65535))
+        print(ulid, "|", ulid.uuid(), "|", ulid.value())
 
     def testUnsignedIntFrom32base(self):
         self.assertEqual(15000, ULID.unsigned_int_from_32base("eko"))

@@ -143,6 +143,18 @@ class TestULID(unittest.TestCase):
         ulid = ULID(random.randint(0, 65535))
         print(ulid, "|", ulid.uuid(), "|", ulid.value())
 
+    def testPerformance(self):
+        worker_id = random.randint(0, 65535)
+        turns = 1000000
+
+        start = time.time_ns()
+        for _ in range(turns):
+            ULID(worker_id)
+
+        elapsed = (time.time_ns() - start) / 1000000
+
+        print(f"{elapsed:.3f} ms elapsed for generating {turns} ULID, {turns / (elapsed / 1000):.0f} id/s.")
+
     def testUnsignedIntFrom32base(self):
         self.assertEqual(15000, ULID.unsigned_int_from_32base("eko"))
         self.assertEqual(0x3a98, ULID.unsigned_int_from_32base("eko"))

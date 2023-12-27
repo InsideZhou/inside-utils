@@ -105,18 +105,29 @@ class ULID:
             and self.rand_num == other.rand_num
 
     def uuid(self) -> uuid.UUID:
-        rand_bytes = self.rand_num.to_bytes(int(ULID.rand_bits / 8), byteorder="big")
-        worker_bytes = self.worker_id.to_bytes(int(ULID.worker_bits / 8), byteorder="big")
-        ts_bytes = self.timestamp_millis.to_bytes(len(rand_bytes) + len(worker_bytes), byteorder="big")
+        rand_bytes = self.rand_num.to_bytes(ULID.rand_bits // 8, byteorder="big")
+        worker_bytes = self.worker_id.to_bytes(ULID.worker_bits // 8, byteorder="big")
+        ts_bytes = self.timestamp_millis.to_bytes(ULID.timestamp_bits // 8, byteorder="big")
 
         return uuid.UUID(ts_bytes.hex() + worker_bytes.hex() + rand_bytes.hex())
 
-    def value(self):
+    def value(self) -> str:
         ts = ULID.unsigned_int_to_32base(self.timestamp_millis)
         worker = ULID.unsigned_int_to_32base(self.worker_id)
         r = ULID.unsigned_int_to_32base(self.rand_num)
 
         return f"{ts}{worker}{r}"
+
+    def bin_value(self) -> str:
+        return f"{self.timestamp_millis:b}{self.worker_id:b}{self.rand_num:b}"
+
+    def hex_value(self) -> str:
+        return f"{self.timestamp_millis:X}{self.worker_id:X}{self.rand_num:X}"
+
+    def bytes(self, byteorder="big") -> bytes:
+        val = self.hex_value()
+
+        return int(val, 16).to_bytes((len(val) + 1) // 2, byteorder=byteorder)
 
 
 class TestULID(unittest.TestCase):
@@ -137,8 +148,9 @@ class TestULID(unittest.TestCase):
         arr.sort()
         self.assertEqual(["a", "ab"], arr)
 
-        ulid = ULID(15000)
-        print(ulid, "|", ulid.uuid(), "|", ulid.value())
+        ulid = ULID(0)
+        print(ulid, "|", ulid.uuid(), "|", ulid.value(), "|", int(ulid.value(), 32), "|", ulid.hex_value(), "|",
+              ulid.bytes())
 
         ulid = ULID(random.randint(0, 65535))
         print(ulid, "|", ulid.uuid(), "|", ulid.value())

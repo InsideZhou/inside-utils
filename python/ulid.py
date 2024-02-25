@@ -12,7 +12,7 @@ import uuid
 
 class ULID:
     """
-    Inspired by https://g.co/bard/share/18866036c6ca and https://github.com/ulid/spec.
+    Inspired by https://github.com/ulid/spec.
     Main feature is distributed and sortable.
     Use 32-based number system, [0-9a-v], 5 bits per character, case-insensitive
     Format: "timestamp_bits-worker_bits-random_bits"
@@ -165,7 +165,7 @@ class TestULID(unittest.TestCase):
 
         elapsed = (time.time_ns() - start) / 1000000
 
-        print(f"{elapsed:.3f} ms elapsed for generating {turns} ULID, {turns / (elapsed / 1000):.0f} id/s.")
+        print(f"{elapsed:.3f}ms elapsed for generating {turns} ULID, {turns / (elapsed / 1000):.0f}id/s.")
 
     def testUnsignedIntFrom32base(self):
         self.assertEqual(15000, ULID.unsigned_int_from_32base("eko"))

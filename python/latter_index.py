@@ -18,18 +18,20 @@ def latter_index(chars: str) -> (str, int, int):
         if distance is None or d < distance:
             char, distance = c, d
 
-    return chars, char, alphabet.index(char) + 1 if distance is not None else None, distance
+    return chars, char, alphabet.index(char) + 1, distance
 
 
 if "__main__" == __name__:
     parser = argparse.ArgumentParser(description="字符串中距字母序列两端最近的字母")
     parser.add_argument('chars', nargs='?', type=str, default="")
+    parser.add_argument('mod', nargs='?', type=int, default="7")
     args = parser.parse_args()
 
-    txt = args.chars
+    txt, mod = args.chars, args.mod
     if len(args.chars) == 0:
         txt = ''.join(
             random.SystemRandom().choice(string.ascii_uppercase + string.ascii_lowercase) for _ in
             range(random.randint(3, 5)))
 
-    print(latter_index(txt))
+    result = latter_index(txt)
+    print(f"chars={result[0]}, nearest={result[1]}, 1_based_index={result[2]}%{mod}={result[2] % mod}, distance={result[3]}")

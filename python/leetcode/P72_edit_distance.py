@@ -150,6 +150,9 @@ def print_matrix(array):
 
 class TestStringCompression(unittest.TestCase):
     def testBasic(self):
+        self.assertEqual(2, min_distance("se", ""))
+        self.assertEqual(2, min_distance("", "os"))
+
         self.assertEqual(2, min_distance("se", "os"))
         self.assertEqual(2, min_distance_dp("se", "os"))
 

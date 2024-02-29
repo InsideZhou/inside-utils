@@ -48,25 +48,39 @@ def max_profit_2(prices: List[int], fee: int) -> int:
     return sum(profits)
 
 
+def max_profit_dp(prices: List[int], fee: int) -> int:
+    sell, buy = 0, -prices[0] - fee
+
+    for i in range(1, len(prices)):
+        sell, buy = max(sell, buy + prices[i]), max(buy, sell - prices[i] - fee)
+
+    return max(sell, buy)
+
+
 class TestBestTimeToBuyAndSellStockWithTransactionFee(unittest.TestCase):
     def test0(self):
         self.assertEqual(4, max_profit([1, 2, 3, 4, 5, 6], 1))
         self.assertEqual(4, max_profit_2([1, 2, 3, 4, 5, 6], 1))
+        self.assertEqual(4, max_profit_dp([1, 2, 3, 4, 5, 6], 1))
 
     def test1(self):
         self.assertEqual(8, max_profit([1, 3, 2, 8, 4, 9], 2))
         self.assertEqual(8, max_profit_2([1, 3, 2, 8, 4, 9], 2))
+        self.assertEqual(8, max_profit_dp([1, 3, 2, 8, 4, 9], 2))
 
     def test2(self):
         self.assertEqual(6, max_profit([1, 3, 7, 5, 10, 3], 3))
         self.assertEqual(6, max_profit_2([1, 3, 7, 5, 10, 3], 3))
+        self.assertEqual(6, max_profit_dp([1, 3, 7, 5, 10, 3], 3))
 
     def test3(self):
         self.assertEqual(13, max_profit([1, 4, 6, 2, 8, 3, 10, 14], 3))
         self.assertEqual(13, max_profit_2([1, 4, 6, 2, 8, 3, 10, 14], 3))
+        self.assertEqual(13, max_profit_dp([1, 4, 6, 2, 8, 3, 10, 14], 3))
 
     def test4(self):
         self.assertEqual(4, max_profit_2([2, 1, 4, 4, 2, 3, 2, 5, 1, 2], 1))
+        self.assertEqual(4, max_profit_dp([2, 1, 4, 4, 2, 3, 2, 5, 1, 2], 1))
 
 
 if __name__ == '__main__':

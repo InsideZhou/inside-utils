@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import unittest
-from typing import Optional, List
+from typing import Optional, List, Generator
 
 
 class ListNode:
@@ -35,11 +35,39 @@ class ListNode:
     def connect(self, next_node: ListNode):
         self.next = next_node
 
-    def to_values(self) -> List[int]:
+    def to_values(self) -> Generator[int]:
         node = self
         while node is not None:
             yield node.val
             node = node.next
+
+    def rotate_right(self, k: int) -> Optional[ListNode]:
+        head = self
+
+        if 0 == k:
+            return head
+
+        current = head
+        count = 1
+
+        while current.next is not None:
+            current = current.next
+            count += 1
+
+        end = current
+        cut = count - k % count - 1
+
+        current = head
+        index = 0
+        while index < cut:
+            current = current.next
+            index += 1
+
+        if current != end:
+            end.next, head = head, current.next
+            current.next = None
+
+        return head
 
 
 # noinspection PyCompatibility

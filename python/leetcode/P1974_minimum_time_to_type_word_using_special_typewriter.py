@@ -27,7 +27,7 @@ def min_time_to_type_word(word):
 
 class TestMinimumTimeToTypeWordUsingSpecialTypewriter(unittest.TestCase):
     def testBasic1(self):
-        self.assertEqual(1, min_time_to_type_word('a'))
+        self.assertEqual(3, min_time_to_type_word('aaa'))
 
     def testBasic2(self):
         self.assertEqual(5, min_time_to_type_word('abc'))

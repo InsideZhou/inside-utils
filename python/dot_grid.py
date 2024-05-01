@@ -33,7 +33,7 @@ Compute the number of valid patterns and print the number.
 from __future__ import annotations
 
 import unittest
-from typing import List, Optional
+from typing import List, Optional, Set
 
 
 # 关键点为两个：
@@ -50,31 +50,26 @@ class DotGrid:
         self.edges = []
 
     # 图的建立
-    def connect(self, left_value: int, right_value: int) -> Edge:
-        l_index = left_value - 1
-        r_index = right_value - 1
-        l_dot = self.dots[l_index]
-        r_dot = self.dots[r_index]
+    def connect(self, entry_value: int, exit_value: int) -> Edge:
+        entry_dot = self.dots[entry_value - 1]
+        exit_dot = self.dots[exit_value - 1]
 
-        edge = next((e for e in l_dot.edges if e.left == r_index or e.right == r_index), None)
+        edge = next((e for e in self.edges if e.entry == entry_value and e.exit == exit_value), None)
         if edge is not None:
             return edge
 
-        edge = Edge(l_index, r_index)
+        edge = Edge(entry_value, exit_value)
         self.edges.append(edge)
 
-        l_dot.adjacency_dots.append(r_index)
-        l_dot.edges.append(edge)
-        r_dot.adjacency_dots.append(l_index)
-        r_dot.edges.append(edge)
+        entry_dot.exit_dots.add(exit_value)
+        exit_dot.entry_dots.add(entry_value)
 
         return edge
 
     def generate_patterns(self, minimum_dots: int = 4) -> List[List[int]]:
         result = []
 
-        def trace_dots(index: int, path: List[int] = None):
-            dot = self.dots[index]
+        def trace_dots(dot: Dot, path: List[int] = None):
             if path is None:
                 path = [dot.value]
             else:
@@ -83,12 +78,11 @@ class DotGrid:
             if len(path) >= minimum_dots:
                 result.append(path)
 
-            indexes = [i for i in dot.adjacency_dots if self.dots[i].value not in path]
-            for i in indexes:
-                trace_dots(i, path[:])
+            for val in [val for val in dot.exit_dots if val not in path]:
+                trace_dots(self.dots[val - 1], path[:])
 
-        for idx in range(len(self.dots)):
-            trace_dots(idx)
+        for d in self.dots:
+            trace_dots(d)
 
         return result
 
@@ -97,14 +91,17 @@ class DotGrid:
 class Dot:
     def __init__(self, value):
         self.value = value
-        self.adjacency_dots: List[int] = []
-        self.edges: List[Edge] = []
+        self.entry_dots: Set[int] = set()
+        self.exit_dots: Set[int] = set()
+
+    def adjacent_dots(self) -> Set[int]:
+        return self.entry_dots.union(self.exit_dots)
 
 
 class Edge:
-    def __init__(self, left: int, right: int):
-        self.left = left
-        self.right = right
+    def __init__(self, entry: int, exit_dot: int):
+        self.entry = entry
+        self.exit = exit_dot
 
 
 # noinspection PyCompatibility
@@ -161,7 +158,7 @@ class TestDotGrid(unittest.TestCase):
         self.dot_grid.connect(9, 6)
         self.dot_grid.connect(9, 8)
 
-    def testBasic(self):
+    def testDotGrid(self):
         patterns = self.dot_grid.generate_patterns()
         sum_of_4 = [item for item in patterns if 4 == len(item)]
         sum_of_5 = [item for item in patterns if 5 == len(item)]
@@ -184,6 +181,10 @@ class TestDotGrid(unittest.TestCase):
 
         print("top 10", patterns[0:10])
         print("last 10", patterns[:-10:-1])
+
+        print(f"adjacent dots of 1: {self.dot_grid.dots[0].adjacent_dots()}")
+        print(f"adjacent dots of 2: {self.dot_grid.dots[1].adjacent_dots()}")
+        print(f"adjacent dots of 5: {self.dot_grid.dots[4].adjacent_dots()}")
 
 
 if __name__ == '__main__':

@@ -5,8 +5,14 @@ import unittest
 from typing import List
 
 
-# 借助不含重复数字的特性，利用分治的思路实现。
 def permute(nums: List[int]) -> List[List[int]]:
+    """
+    利用分治算法。一个集合元素的全排列，可以按以下思路获得：
+    1、集合内每个元素（设为A）加上其剩余元素全排列，可以得到一组排列，可以说该排列是按A分类的。
+    2、按并集合并上一步得到的所有组。
+    3、得到该集合元素全排列的结果。
+    """
+
     nums_length = len(nums)
     if 2 == nums_length:
         return [nums, nums[::-1]]

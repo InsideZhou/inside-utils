@@ -5,17 +5,22 @@ from typing import List
 
 
 def rotate(matrix: List[List[int]]) -> None:
-    dimension = len(matrix)
+    """
+    方阵顺时针90°旋转的行列新坐标为：newX, newY = Y, 维度 - X。（也可通过矩阵转置、逆序两个操作达成）
+    基于此，每次迭代都从初始位置出发，顺势完成4个位置的值替换，仅使用相当于其维度 1/2 的迭代次数即可完成旋转。
+    """
 
-    for i in range(dimension - 1):
-        for j in range(i, dimension - 1 - i):
-            src = matrix[i][j]
-            x, y = i, j
-            for _ in range(4):
-                x, y = y, dimension - x - 1
-                target = matrix[x][y]
-                matrix[x][y] = src
-                src = target
+    dimension = len(matrix) - 1
+
+    for i in range(dimension):
+        for j in range(i, dimension - i):
+            x, y, swap = i, j, matrix[i][j]
+            while True:
+                x, y = y, dimension - x
+                matrix[x][y], swap = swap, matrix[x][y]
+
+                if x == i and y == j:
+                    break
 
 
 class TestRotateImage(unittest.TestCase):

@@ -10,15 +10,18 @@ def latter_index(chars: str) -> (str, int, int):
     alphabet = string.ascii_lowercase
     chars_lower = chars.lower()
 
-    char, distance = "", None
+    result, char, distance = [], "", None
 
     for c in chars_lower:
-        d = alphabet.index(c)
-        d = min(d, 25 - d)
+        idx = alphabet.index(c)
+        d = min(idx, 25 - idx)
+
+        result.append(f"{c}({idx + 1},{d})")
+
         if distance is None or d < distance:
             char, distance = c, d
 
-    return chars, char, alphabet.index(char) + 1, distance
+    return " ".join(result), alphabet.index(char) + 1
 
 
 if "__main__" == __name__:
@@ -34,4 +37,4 @@ if "__main__" == __name__:
             range(random.randint(3, 5)))
 
     result = latter_index(txt)
-    print(f"chars={result[0]}, nearest={result[1]}, 1_based_index={result[2]}%{mod}={result[2] % mod}, distance={result[3]}")
+    print(txt, result[0], f"{result[1]}%{mod}={result[1] % mod}")

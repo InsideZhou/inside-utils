@@ -43,7 +43,7 @@ class ListNode:
 
     def rotate_right(self, k: int) -> Optional[ListNode]:
         """
-        必须拿到链表末元素的指针，才能完成rotate，而在此过程中，顺势计算链表长度，稍后可以借助模运算（链表长度n mod k）来减少指针移动次数。
+        必须拿到链表末元素的指针，才能完成rotate，而在此过程中，顺势计算链表长度，稍后可以借助模运算（k mod 链表长度n）来减少指针移动次数。
         """
 
         head = self

@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # https://leetcode.cn/problems/edit-distance/
-import numpy, unittest
+import unittest
 from collections import deque
 from typing import List
+
+import numpy
 
 
 def min_distance(base_word1: str, base_word2: str) -> int:
@@ -101,19 +103,22 @@ def min_distance(base_word1: str, base_word2: str) -> int:
 
 def min_distance_matrix(base_word1: str, base_word2: str) -> List[List[int]]:
     """
-    动态规划
+    两个字符串m、n。
+    m=>n表示从字符串m转化为字符串n。
+
+    m=>n只可能从以下情况中得到：
+    1、m=>n的次数等于，m[:-1]=>n的次数加1。
+    2、m=>n的次数等于，m=>n[:-1]的次数加1。
+    3、m=>n的次数等于，m[:-1]=>n[:-1]的次数加1或0，取决于m最后一个字符是否与n最后一个字符相同。
     """
     base_word1_length = len(base_word1)
     base_word2_length = len(base_word2)
 
     matrix_rows = base_word1_length + 1
     matrix_cols = base_word2_length + 1
+
+    # 矩阵中的任意位置(row,col)的值，表示 base_word1[:row]变化到base_word2[:col]所需最小次数。
     matrix = [[0] * matrix_cols for _ in range(matrix_rows)]
-
-    if base_word1 == '' or base_word2 == '':
-        return matrix
-
-    matrix[0][0] = 0 if base_word1[0] == base_word2[0] else 1
 
     for r in range(matrix_rows):
         matrix[r][0] = r
@@ -123,11 +128,11 @@ def min_distance_matrix(base_word1: str, base_word2: str) -> List[List[int]]:
 
     for r in range(1, matrix_rows):
         for c in range(1, matrix_cols):
-            matrix[r][c] = min(matrix[r][c - 1] + 1,
-                               matrix[r - 1][c] + 1,
-                               matrix[r - 1][c - 1] \
-                                   if base_word1[r - 1] == base_word2[c - 1] \
-                                   else matrix[r - 1][c - 1] + 1)
+            matrix[r][c] = min(
+                matrix[r][c - 1] + 1,
+                matrix[r - 1][c] + 1,
+                matrix[r - 1][c - 1] if base_word1[r - 1] == base_word2[c - 1] else matrix[r - 1][c - 1] + 1
+            )
 
     return matrix
 

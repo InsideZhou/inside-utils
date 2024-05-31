@@ -121,15 +121,34 @@ class BinarySearchTreeNode(TreeNode):
 
 # noinspection PyUnresolvedReferences,PyTypeChecker
 def is_valid_bst(root: BinarySearchTreeNode) -> bool:
-    if root.left is None and root.right is None:
-        return True
-    elif root.left is None:
-        return is_valid_bst(root.right) and root.val < root.right.min_value()
-    elif root.right is None:
-        return is_valid_bst(root.left) and root.left.max_value() < root.val
-    else:
-        return is_valid_bst(root.left) and is_valid_bst(
-            root.right) and root.left.max_value() < root.val < root.right.min_value()
+    """
+    验证搜索二叉树，实质上就是在遍历二叉树时，验证每个节点的值是否在指定的范围内。
+    把范围给到每个节点验证时的上下文，并且正确更新其上下界。
+    """
+
+    def validate(node: BinarySearchTreeNode, lower_bound: int = None, upper_bound: int = None) -> bool:
+        if node.left is None and node.right is None:
+            return True
+
+        if node.left is None:
+            return node.val < node.right.val \
+                and (lower_bound is None or lower_bound < node.val) \
+                and (upper_bound is None or node.right.val < upper_bound) \
+                and validate(node.right, node.val, upper_bound)
+
+        if node.right is None:
+            return node.left.val < node.val \
+                and (lower_bound is None or lower_bound < node.left.val) \
+                and (upper_bound is None or node.val < upper_bound) \
+                and validate(node.left, lower_bound, node.val)
+
+        return node.left.val < node.val < node.right.val \
+            and (lower_bound is None or lower_bound < node.left.val) \
+            and (upper_bound is None or node.right.val < upper_bound) \
+            and validate(node.left, lower_bound, node.val) \
+            and validate(node.right, node.val, upper_bound)
+
+    return validate(root)
 
 
 class TestFlattenBinaryTreeToLinkedList(unittest.TestCase):
@@ -166,6 +185,13 @@ class TestFlattenBinaryTreeToLinkedList(unittest.TestCase):
         e = BinarySearchTreeNode(47, right=d)
 
         tree = BinarySearchTreeNode(32, c, e)
+        self.assertFalse(is_valid_bst(tree))
+
+    def testStandard2(self):
+        # noinspection PyTypeChecker
+        tree: BinarySearchTreeNode = TreeNode.construct_binary_tree_from_values(
+            [120, 70, 140, 50, 100, 130, 160, 20, 55, 75, 110, 119, 135, 150, 200])
+
         self.assertFalse(is_valid_bst(tree))
 
 

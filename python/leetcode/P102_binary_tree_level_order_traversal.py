@@ -67,7 +67,11 @@ class TreeNode(object):
 
         return min(candidates)
 
-    def level_order_traversal_for_value(self) -> List[int]:
+    def level_order_traversal_for_value(self) -> List[Optional[int]]:
+        """
+        仅生成节点值的层序遍历，结果数组中间空值用None表示，末尾空值全部舍去。
+        """
+
         nums = []
         nodes = [self]
 
@@ -132,6 +136,10 @@ class TreeNode(object):
 
 
 def level_order(root: Optional[TreeNode]) -> List[List[int]]:
+    """
+    生成二维数组的层序遍历。
+    """
+
     result = []
     current_level, level_group = 0, []
     nodes = deque([(current_level, root)])

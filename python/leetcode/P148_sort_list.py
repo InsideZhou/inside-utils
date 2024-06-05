@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # https://leetcode.cn/problems/sort-list/
 from __future__ import annotations
+
 import random
 import unittest
 from typing import Optional
@@ -32,6 +33,12 @@ def bst_sort(head: Optional[ListNode]) -> Optional[ListNode]:
             list_nodes.append(ListNode(tn.val, first_list_node))
 
     return list_nodes[-1] if len(list_nodes) > 0 else None
+
+
+# 插入排序与选择排序的思想基本一致，都是从无序中取出元素放置指定位置，以变得有序。
+# 它们的区别在于，在无序中取出元素时：
+# 插入排序是无所谓取出什么的，取到什么就什么，然后再考虑能放到有序集合中哪个位置，所以叫插入。
+# 选择排序是一直取，直到选到最小（或最大，看具体规则）的那个元素，然后直接放到有序集合的末尾或者头部，所以叫选择。
 
 
 def insertion_sort(head: Optional[ListNode]) -> Optional[ListNode]:
@@ -71,6 +78,43 @@ def insertion_sort(head: Optional[ListNode]) -> Optional[ListNode]:
             cursor_pointer.position += 1
 
     return head
+
+
+def selection_sort(head: Optional[ListNode]) -> Optional[ListNode]:
+    if head is None:
+        return None
+
+    sorted_head, sorted_end = None, None
+
+    while head is not None:
+
+        # === 寻找候选节点
+        prev, cursor, candidate, candidate_prev = head, head.next, head, None
+        while cursor is not None:
+            if cursor.val < candidate.val:
+                candidate, candidate_prev = cursor, prev
+
+            prev, cursor = cursor, cursor.next
+        # ===
+
+        # === 把候选节点从原链条中断开。
+        if candidate_prev is None:
+            head = candidate.next
+        else:
+            candidate_prev.next = candidate.next
+
+        candidate.next = None
+        # ===
+
+        # === 候选节点加入到已排序链条
+        if sorted_end is None:
+            sorted_head, sorted_end = candidate, candidate
+        else:
+            sorted_end.next = candidate
+            sorted_end = candidate
+        # ===
+
+    return sorted_head
 
 
 def quick_sort(head: Optional[ListNode]) -> (Optional[ListNode], Optional[ListNode]):
@@ -145,7 +189,12 @@ def quick_sort(head: Optional[ListNode]) -> (Optional[ListNode], Optional[ListNo
 
 
 # noinspection PyCompatibility
-def merge_sort(head: Optional[ListNode]) -> (Optional[ListNode], Optional[ListNode]):
+def merge_sort(head: Optional[ListNode]) -> Optional[ListNode]:
+    """
+    这个归并排序有分治的思路，把整个集合细分到最小粒度，从最小粒度开始有序合并，然后逐步扩大粒度，重复有序合并的过程。
+    具体实现是分组(group)，每组两格(booth)。
+    """
+
     if head is None:
         return None
     elif head.next is None:
@@ -160,38 +209,38 @@ def merge_sort(head: Optional[ListNode]) -> (Optional[ListNode], Optional[ListNo
 
     group_end: Optional[ListNode] = None
 
-    former_booths_head: Optional[ListNode] = None
-    former_booths_end: Optional[ListNode] = None
+    former_booth_head: Optional[ListNode] = None
+    former_booth_end: Optional[ListNode] = None
 
-    latter_booths_head: Optional[ListNode] = None
-    latter_booths_end: Optional[ListNode] = None
+    latter_booth_head: Optional[ListNode] = None
+    latter_booth_end: Optional[ListNode] = None
 
     while True:
         current = cursor
         booth_index = cursor_index % group_length
         if 0 == booth_index:
-            former_booths_head = current
-            former_booths_end = current
+            former_booth_head = current
+            former_booth_end = current
         elif 0 < booth_index < booth_length:
-            former_booths_end.next = current
-            former_booths_end = former_booths_end.next
+            former_booth_end.next = current
+            former_booth_end = former_booth_end.next
         elif booth_index == booth_length:
-            latter_booths_head = current
-            latter_booths_end = current
+            latter_booth_head = current
+            latter_booth_end = current
         else:
-            latter_booths_end.next = current
-            latter_booths_end = latter_booths_end.next
+            latter_booth_end.next = current
+            latter_booth_end = latter_booth_end.next
 
         cursor = cursor.next
         cursor_index += 1
 
         if booth_index == group_length - 1 or cursor is None:
-            former_booths_end.next = None
-            if latter_booths_end is not None:
-                latter_booths_end.next = None
+            former_booth_end.next = None
+            if latter_booth_end is not None:
+                latter_booth_end.next = None
 
             prev_group_end = group_end
-            group_head, group_end = merge(former_booths_head, latter_booths_head)
+            group_head, group_end = merge(former_booth_head, latter_booth_head)
 
             if prev_group_end is not None:
                 prev_group_end.next = group_head
@@ -199,10 +248,10 @@ def merge_sort(head: Optional[ListNode]) -> (Optional[ListNode], Optional[ListNo
             if cursor_index <= group_length:
                 head = group_head
 
-            former_booths_head = None
-            former_booths_end = None
-            latter_booths_head = None
-            latter_booths_end = None
+            former_booth_head = None
+            former_booth_end = None
+            latter_booth_head = None
+            latter_booth_end = None
 
         if cursor is None:
             if cursor_index <= group_length:
@@ -216,16 +265,16 @@ def merge_sort(head: Optional[ListNode]) -> (Optional[ListNode], Optional[ListNo
             cursor_index = 0
             cursor = head
 
-            former_booths_head = None
-            former_booths_end = None
-            latter_booths_head = None
-            latter_booths_end = None
+            former_booth_head = None
+            former_booth_end = None
+            latter_booth_head = None
+            latter_booth_end = None
             group_end = None
 
     if group_end is not None:
         group_end.next = None
 
-    return head, group_end
+    return head
 
 
 def merge(left_node: Optional[ListNode], right_node: Optional[ListNode]) -> (Optional[ListNode], Optional[ListNode]):
@@ -256,33 +305,8 @@ def merge(left_node: Optional[ListNode], right_node: Optional[ListNode]) -> (Opt
 
 # noinspection DuplicatedCode
 class TestReverseLinkedListII(unittest.TestCase):
-    def testSimple(self):
-        a = ListNode(1)
-        b = ListNode(2, a)
 
-        head = insertion_sort(b)
-        sorted_list = []
-        while head is not None:
-            sorted_list.append(head.val)
-            head = head.next
-
-        self.assertEqual([1, 2], sorted_list)
-
-    def testBasic(self):
-        a = ListNode(3)
-        b = ListNode(1, a)
-        c = ListNode(2, b)
-        d = ListNode(4, c)
-
-        head = insertion_sort(d)
-        sorted_list = []
-        while head is not None:
-            sorted_list.append(head.val)
-            head = head.next
-
-        self.assertEqual([1, 2, 3, 4], sorted_list)
-
-    def testStandard(self):
+    def testInsertionSort(self):
         a = ListNode(0)
         b = ListNode(4, a)
         c = ListNode(3, b)
@@ -296,6 +320,61 @@ class TestReverseLinkedListII(unittest.TestCase):
             head = head.next
 
         self.assertEqual([-1, 0, 3, 4, 5], sorted_list)
+
+    def testInsertionSortDuplicateNodes(self):
+        a = ListNode(15)
+        b = ListNode(11, a)
+        c = ListNode(5, b)
+        d = ListNode(8, c)
+        e = ListNode(1, d)
+        f = ListNode(-3, e)
+        g = ListNode(5, f)
+        h = ListNode(14, g)
+        i = ListNode(19, h)
+        j = ListNode(4, i)
+
+        head = insertion_sort(j)
+        sorted_list = []
+        while head is not None:
+            sorted_list.append(head.val)
+            head = head.next
+
+        self.assertEqual([-3, 1, 4, 5, 5, 8, 11, 14, 15, 19], sorted_list)
+
+    def testSelectionSort(self):
+        a = ListNode(0)
+        b = ListNode(4, a)
+        c = ListNode(3, b)
+        d = ListNode(5, c)
+        e = ListNode(-1, d)
+
+        head = selection_sort(e)
+        sorted_list = []
+        while head is not None:
+            sorted_list.append(head.val)
+            head = head.next
+
+        self.assertEqual([-1, 0, 3, 4, 5], sorted_list)
+
+    def testSelectionSortDuplicateNodes(self):
+        a = ListNode(15)
+        b = ListNode(11, a)
+        c = ListNode(5, b)
+        d = ListNode(8, c)
+        e = ListNode(1, d)
+        f = ListNode(-3, e)
+        g = ListNode(5, f)
+        h = ListNode(14, g)
+        i = ListNode(19, h)
+        j = ListNode(4, i)
+
+        head = selection_sort(j)
+        sorted_list = []
+        while head is not None:
+            sorted_list.append(head.val)
+            head = head.next
+
+        self.assertEqual([-3, 1, 4, 5, 5, 8, 11, 14, 15, 19], sorted_list)
 
     def testDuplicateNodes(self):
         a = ListNode(15)
@@ -325,7 +404,7 @@ class TestReverseLinkedListII(unittest.TestCase):
             n = ListNode(i, nodes[-1]) if len(nodes) > 0 else ListNode(i)
             nodes.append(n)
 
-        head, _ = merge_sort(nodes[-1])
+        head = merge_sort(nodes[-1])
         sorted_list = []
         while head is not None:
             sorted_list.append(head.val)

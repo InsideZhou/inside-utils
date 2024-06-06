@@ -5,6 +5,11 @@ from typing import List
 
 
 def num_islands(grid: List[List[str]]) -> int:
+    """
+    核心思路是摧毁所有遇到的岛屿，以避免重复统计。
+    一旦遇到陆地，就按岛屿规则顺势摧毁所有关联陆地，此时就相当于摧毁了一个岛屿，岛屿统计增长1。
+    """
+
     rows_count = len(grid)
     result = 0
 

@@ -6,13 +6,18 @@ import unittest
 from typing import List
 
 
-# 每次计算时，必须的依赖已经由上游完成计算，并注入到当前上下文中。
 def rob(nums: List[int]) -> int:
-    prev_two, prev_one = 0, 0
-    for num in nums:
-        prev_two, prev_one = prev_one, max(prev_two + num, prev_one)
+    """
+    对当前房子做出劫掠或跳过的决策之后，都可以视为已处理。
+    按顺序每处理一所房子，都会有一个当前的劫掠总金额。
+    当前劫掠总金额，取决于此前第二个房子的劫掠加上当前房子能劫掠到的金额，与前一所房子的劫掠总金额相比，哪个更大。
+    """
 
-    return prev_one
+    two_before_current, previous = 0, 0
+    for num in nums:
+        two_before_current, previous = previous, max(two_before_current + num, previous)
+
+    return previous
 
 
 class TestHouseRobber(unittest.TestCase):

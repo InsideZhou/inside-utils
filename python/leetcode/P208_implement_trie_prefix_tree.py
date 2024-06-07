@@ -7,21 +7,23 @@ import unittest
 from typing import Optional, List
 
 
+# 节点的设计需要能识别出到当前节点为止，是否已构成一个词。
 class TrieNode:
-    def __init__(self, value: Optional[str], chars: str = string.ascii_lowercase):
-        self.base_chars = chars
-        self.base_ord = ord(chars[0])
-        self.word_stop = False
+    base_chars = string.ascii_lowercase
+    base_ord = ord(base_chars[0])
+
+    def __init__(self, value: Optional[str], word_stop: bool = False):
         self.value = value
-        self.children: List[Optional[TrieNode]] = [None] * len(chars)
+        self.word_stop = word_stop
+        self.children: List[Optional[TrieNode]] = [None] * len(TrieNode.base_chars)
 
     def add_child(self, value: str) -> TrieNode:
-        child = TrieNode(value, self.base_chars)
-        self.children[ord(value) - self.base_ord] = child
+        child = TrieNode(value)
+        self.children[ord(value) - TrieNode.base_ord] = child
         return child
 
     def get_child(self, value: str) -> Optional[TrieNode]:
-        return self.children[ord(value) - self.base_ord]
+        return self.children[ord(value) - TrieNode.base_ord]
 
 
 # noinspection PyPep8Naming
@@ -41,8 +43,8 @@ class Trie:
     def search(self, word: str) -> bool:
         node = self.root
         s = ""
-        for index in range(len(word)):
-            node = node.get_child(word[index])
+        for c in word:
+            node = node.get_child(c)
             if node is not None:
                 s += node.value
             else:
@@ -52,8 +54,8 @@ class Trie:
 
     def startsWith(self, prefix: str) -> bool:
         node = self.root
-        for index in range(len(prefix)):
-            node = node.get_child(prefix[index])
+        for c in prefix:
+            node = node.get_child(c)
             if node is None:
                 return False
 
@@ -92,6 +94,8 @@ class TestImplementTriePrefixTree(unittest.TestCase):
         self.assertFalse(trie.search("app"))
 
         trie.insert("app")
+        self.assertTrue(trie.search("apple"))
+        self.assertFalse(trie.search("application"))
         self.assertTrue(trie.search("app"))
 
     def testStartsWith(self):

@@ -6,6 +6,10 @@ from typing import List
 
 
 def min_sub_array_len(target: int, nums: List[int]) -> int:
+    """
+    思路就是用一个窗口去遍历集合，这个窗口可调整、滑动。
+    """
+
     window_start, window_end = 0, 0
     min_window_length = 0
     window_sum = nums[0]

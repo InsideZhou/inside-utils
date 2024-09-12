@@ -39,8 +39,6 @@ class BinarySearchTreeNode(TreeNode):
         node = self
 
         while True:
-            node.child_count += 1
-
             if val < node.val:
                 if node.left is None:
                     node.left = BinarySearchTreeNode(val)
@@ -58,8 +56,6 @@ class BinarySearchTreeNode(TreeNode):
                 break
 
     def add_node(self, node: BinarySearchTreeNode) -> BinarySearchTreeNode:
-        self.child_count += node.child_count
-
         if node.val == self.val:
             self.weight += node.weight
 
@@ -73,9 +69,9 @@ class BinarySearchTreeNode(TreeNode):
             else:
                 self.right = self.right.add_node(node.right) if node.right is not None else self.right
         elif node.val < self.val:
-            self.left = node if self.left is None else self.left.add_node(node)
+            self.left = node if self.left is None else self.left.merge(node)
         else:
-            self.right = node if self.right is None else self.right.add_node(node)
+            self.right = node if self.right is None else self.right.merge(node)
 
         return self
 
@@ -100,8 +96,6 @@ class BinarySearchTreeNode(TreeNode):
                     middle_root = node.left
                 elif node.left is None:
                     middle_root = node.right
-                elif node.left.child_count > node.right.child_count:
-                    middle_root = node.left.add_node(node.right)
                 else:
                     middle_root = node.right.add_node(node.left)
 

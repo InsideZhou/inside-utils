@@ -14,69 +14,102 @@ class MaximumBinaryTreeNode(TreeNode):
         if 0 == len(nums):
             return None
 
-        node = None
-        for num in nums:
-            if node is None:
-                node = MaximumBinaryTreeNode(num)
-            else:
-                node = node.add(num)
+        node = MaximumBinaryTreeNode(nums[0])
+        for num in nums[1:]:
+            node = node.add(num)
 
         return node
+
+    def __str__(self):
+        values = self.level_order_traversal_for_value()
+        values_count, height = len(values), 0
+        result = ""
+        for idx, item in enumerate(self.level_order_traversal_for_value()):
+            if idx == values_count - 1:
+                result += f"{item}\n"
+            elif idx == pow(2, height) - 1:
+                result += f"{item}\n"
+                height += 1
+            else:
+                result += f"{item},"
+
+        return result
 
     def max_value(self) -> int:
         return self.val
 
     # 构建出根就是最大值的二叉树，可以由此展开联想，在构建二叉树的同时，做一些额外操作，得到有特定问题针对性的二叉树。
     def add(self, val: int) -> MaximumBinaryTreeNode:
-        if val > self.val:
-            return MaximumBinaryTreeNode(val, left=self)
-
-        if val == self.val:
-            self.weight += 1
-            return self
-
-        self.child_count += 1
-
-        if self.left is None:
-            self.left = MaximumBinaryTreeNode(val)
-        elif self.right is None:
-            self.right = MaximumBinaryTreeNode(val)
-        elif self.left.child_count < self.right.child_count:
-            self.left = self.left.add(val)
-        else:
-            self.right = self.right.add(val)
-
-        return self
+        return self.add_node(MaximumBinaryTreeNode(val))
 
     def add_node(self, node: MaximumBinaryTreeNode) -> MaximumBinaryTreeNode:
-        self.child_count += node.child_count
+        """
+        假设了所添加节点是单节点，无下级节点。
+        确保每一个节点的左子节点值小于其右子节点。
+        """
 
-        if node.val == self.val:
-            self.weight += node.weight
+        cursor, parent = self, None
 
-            if self.left is None:
-                self.left = node.left
+        while True:
+            if cursor.val < node.val:
+                node.left = cursor
+
+                if parent is None:
+                    return node
+
+                if cursor == parent.left:
+                    parent.left = node
+                else:
+                    parent.right = node
+
+                return self
+            elif cursor.val == node.val:
+                cursor.weight += node.weight
+                return self
+            elif cursor.right is None and cursor.left is None:
+                cursor.left = node
+                return self
+            elif cursor.right is None:
+                if node.val > cursor.left.val:
+                    cursor.right = node
+                else:
+                    cursor.right = cursor.left
+                    cursor.left = node
+
+                return self
+            elif cursor.left is None:
+                if node.val > cursor.right.val:
+                    cursor.left = cursor.right
+                    cursor.right = node
+                else:
+                    cursor.left = node
+
+                return self
+            elif cursor.left.val < node.val <= cursor.right.val:
+                cursor, parent = cursor.right, cursor
             else:
-                self.left = self.left.add_node(node.left) if node.left is not None else self.left
+                cursor, parent = cursor.left, cursor
 
-            if self.right is None:
-                self.right = node.right
+    def merge(self, node: MaximumBinaryTreeNode) -> MaximumBinaryTreeNode:
+        root = self
+
+        if node is None:
+            return root
+
+        if root.val == node.val:
+            root.weight += node.weight
+            root.left = node.left if root.left is None else root.left.merge(node.left)
+            root.right = node.right if root.right is None else root.right.merge(node.right)
+        else:
+            if root.val < node.val:
+                root, node = node, root
+
+            if node.val % 2 == 0:
+                root.right = node if root.right is None else root.right.merge(node)
             else:
-                self.right = self.right.add_node(node.right) if node.right is not None else self.right
+                root.left = node if root.left is None else root.left.merge(node)
 
-            return self
-
-        if node.val > self.val:
-            if node.left is None:
-                node.left = self
-            else:
-                node.left = node.left.add_node(self)
-
-            return node
-
-        self.right = node if self.right is None else self.right.add_node(node)
-
-        return self
+        return root
 
     def remove_root(self) -> Optional[MaximumBinaryTreeNode]:
         self.weight -= 1
@@ -85,10 +118,11 @@ class MaximumBinaryTreeNode(TreeNode):
 
         if self.left is None:
             return self.right
-        elif self.right is None:
+
+        if self.right is None:
             return self.left
 
-        return self.left.add_node(self.right)
+        return self.right.merge(self.left)
 
 
 class TestMaximumBinaryTree(unittest.TestCase):

@@ -39,11 +39,8 @@ class TreeNode(object):
         self.left = left
         self.right = right
 
-        self.child_count = 0
-        if self.left is not None:
-            self.child_count += self.left.child_count
-        if self.right is not None:
-            self.child_count += self.right.child_count
+    def __str__(self):
+        return ",".join([str(item) for item in self.level_order_traversal_for_value()])
 
     def max_value(self) -> int:
         candidates = [self.val]

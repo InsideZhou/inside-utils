@@ -5,6 +5,11 @@ from typing import List
 
 
 def combination_sum_iii(k: int, n: int, pool_start=1, pool_end=9) -> List[List[int]]:
+    """
+    思路就是遍历，遍历时提前跳出不需要的逻辑分支，缩小遍历的范围。
+    组合中部分数字固定后，递归进入处理子组合。
+    """
+
     if 1 == k:
         return [[n]] if pool_start <= n <= pool_end else []
     elif k >= n:

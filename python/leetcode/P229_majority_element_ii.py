@@ -11,14 +11,24 @@ class Candidate:
         self.count = count
 
 
-# 用摩尔投票法实现，空间复杂度是O(1)
 # noinspection PyCompatibility
 def majority_element(nums: List[int], threshold=3) -> List[int]:
+    """
+    求众数（即从集合中找出相同且数量占比超过阈值t的元素）
+    用摩尔投票法实现，空间复杂度是O(1)。
+    摩尔投票法的背景有：
+    1、满足条件的元素个数（相同的元素都算1个）肯定小于1/t。
+    2、仅需要(1/t-1)个空间记录候选元素。
+    3、两次遍历集合。第一次预选可能符合条件的元素；第二次确定候选元素是否真的满足。也就是第一次极大的缩小预测范围。
+    4、预选时，采用抵消的思路，当从集合中取出元素与候选组做比较时，如果其不在候选组中，则抵消一次候选组的计数，计数已为0无法被抵消时的候选元素被移出候选组。
+
+    """
+
     candidates: List[Optional[Candidate]] = [None] * (threshold - 1)
 
     def replace_none(n: int) -> bool:
-        for i in range(threshold - 1):
-            if candidates[i] is None:
+        for i, c in enumerate(candidates):
+            if c is None:
                 candidates[i] = Candidate(n)
                 return True
 
